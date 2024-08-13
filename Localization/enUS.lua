@@ -28,6 +28,8 @@ L["Sturdy Chest 10"] = "|cFFFFFFFFSturdy Chest|r"
 L["Sturdy Chest 10 Note"] = "A mushroom that will help you jump to the last chest."
 L["Sturdy Chest 11"] = "|cFFFFFFFFSturdy Chest|r"
 L["Sturdy Chest 11 Note"] = "Jump onto the scaffolding."
+L["Sturdy Chest 12"] = "|cFFFFFFFFSturdy Chest|r"
+L["Sturdy Chest 12 Note"] = "Underwater"
 
 L["Wrapped Spool"] = "|cFFFFFFFFPuzzle|r"
 L["Wrapped Spool Note"] = "|cFFFFFFFFSolve the puzzle and get a power-up.|r"

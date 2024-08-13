@@ -28,6 +28,8 @@ L["Sturdy Chest 10"] = "|cFFFFFFFFПрочный сундук|r"
 L["Sturdy Chest 10 Note"] = "Гриб с помощью которого вы допрыгнуть до последнего сундука."
 L["Sturdy Chest 11"] = "|cFFFFFFFFПрочный сундук|r"
 L["Sturdy Chest 11 Note"] = "Запрыгните на строительные леса."
+L["Sturdy Chest 12"] = "|cFFFFFFFFПрочный сундук|r"
+L["Sturdy Chest 12 Note"] = "Под водой"
 
 L["Wrapped Spool"] = "|cFFFFFFFFГоловоломка|r"
 L["Wrapped Spool Note"] = "|cFFFFFFFFРешите головоломку и получите усиление.|r"

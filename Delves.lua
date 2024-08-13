@@ -9,18 +9,18 @@ local path_meta = {__index = {
 }}
 
 ns.map_spellids = {
-    -- [2251] = 0, -- The Waterworks / Водокачка +
-    -- [2269] = 0, -- Earthcrawl Mines / шахты Землескребов +
-    -- [2249] = 0, -- Fungal Folly / Грибных гадостей +
-    -- [2310] = 0, -- Skittering Breach / Снующего пролома + 
+    -- [2251] = 0, -- The Waterworks / Водокачка ++
+    -- [2269] = 0, -- Earthcrawl Mines / шахты Землескребов ++
+    -- [2249] = 0, -- Fungal Folly / Грибных гадостей ++
+    -- [2310] = 0, -- Skittering Breach / Снующего пролома ++ 
     -- [2277] = 0, -- Nightfall Sanctum / Святыни Сумерек
-    -- [2302] = 0, -- The Dread Pit / Ямы Ужаса + 
+    -- [2302] = 0, -- The Dread Pit / Ямы Ужаса ++ 
 	-- [2259] = 0, -- Tak-Rethan Abyss / глубин Так-Ретана (2314) +
-    -- [2250] = 0, -- Kriegval's Rest / Покоя Кригвала +
-    -- [2312] = 0, -- Mycomancer chestrn / пещеры микомантов +
+    -- [2250] = 0, -- Kriegval's Rest / Покоя Кригвала ++
+    -- [2312] = 0, -- Mycomancer chestrn / пещеры микомантов ++
     -- [2299] = 0, -- The Underkeep / Подоплота
     -- [2313] = 0, -- The Spiral Weave / Сплетенной Спирали (2347) +
-    -- [2300] = 0, -- The Sinkhole / Воронки (2301)
+    -- [2301] = 0, -- The Sinkhole / Воронки +
 }
 
 ns.points = {
@@ -58,40 +58,35 @@ ns.points = {
         [45251473] = ({
             label = L["Sturdy Chest"],
             cont = true,
-            Zamro = true,
-            achievement = {id = 40815, criteria = 167540}, 			
+            Zamro = true, 			
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
         }),
         [43502690] = ({
             label = L["Sturdy Chest"],
             cont = true,
-            Zamro = true,
-            achievement = {id = 40815, criteria = 167540}, 			
+            Zamro = true,			
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
         }),
         [32844006] = ({
             label = L["Sturdy Chest"],
             cont = true,
-            Zamro = true,
-            achievement = {id = 40815, criteria = 167540}, 			
+            Zamro = true,			
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
         }),		
         [36283324] = ({
             label = L["Sturdy Chest 1"],
             cont = true,
-            Zamro = true,
-            achievement = {id = 40815, criteria = 167540}, 			
+            Zamro = true,		
             note = L["Sturdy Chest 1 Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
         }),		
         [53168205] = ({
             label = L["Sturdy Chest"],
             cont = true,
-            Zamro = true,
-            achievement = {id = 40815, criteria = 167540}, 			
+            Zamro = true,			
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
         }),		
@@ -160,20 +155,23 @@ ns.points = {
         [49662186] = ({
             label = L["Sturdy Chest"],
             cont = true,
+            quest = 83652,				
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
         }),
 	    [62814517] = ({
-            label = L["Sturdy Chest"],
+            label = L["Sturdy Chest 12"],
             cont = true,
+            quest = 83691,				
             Zamro = true,
-            note = L["Sturdy Chest Note"],
+            note = L["Sturdy Chest 12 Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
 	    }),	
 	    [68754046] = ({
             label = L["Sturdy Chest"],
             cont = true,
+            quest = 83455,				
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
@@ -181,6 +179,7 @@ ns.points = {
 	    [40746165] = ({
             label = L["Sturdy Chest 7"],
             cont = true,
+            quest = 83672,				
             Zamro = true,
             note = L["Sturdy Chest 7 Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
@@ -190,6 +189,7 @@ ns.points = {
         [51216529] = ({
             label = L["Sturdy Chest"],
             cont = true,
+            quest = 83679,				
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
@@ -197,6 +197,7 @@ ns.points = {
 	    [26982640] = ({
             label = L["Sturdy Chest"],
             cont = true,
+            quest = 83660,			
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
@@ -204,6 +205,7 @@ ns.points = {
 	    [55592415] = ({
             label = L["Sturdy Chest"],
             cont = true,
+            quest = 83696,				
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
@@ -211,6 +213,7 @@ ns.points = {
 	    [66591485] = ({
             label = L["Sturdy Chest 8"],
             cont = true,
+            quest = 83680,				
             Zamro = true,
             note = L["Sturdy Chest 8 Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
@@ -341,6 +344,79 @@ ns.points = {
 	    [74397009] = ({
             label = L["Sturdy Chest"],
             cont = true,		
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),	
+    },	
+    [2251] = { -- The Waterworks / Водокачка
+        [49932452] = ({
+           label = L["Sturdy Chest"],
+           cont = true,
+           Zamro = true,
+           note = L["Sturdy Chest Note"],
+           pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+	    [44453833] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 83650,			
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+	    [47955348] = ({
+            label = L["Sturdy Chest"],
+            cont = true,			
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),	
+	    [49627926] = ({
+            label = L["Sturdy Chest"],
+            cont = true,	
+            quest = 83456,				
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),	
+    },	
+    [2301] = { -- The Sinkhole / Воронки
+        [52201332] = ({
+           label = L["Sturdy Chest 12"],
+           cont = true,
+           quest = 83453,			   
+           Zamro = true,
+           note = L["Sturdy Chest 12 Note"],
+           pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+	    [43486083] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 83668,			
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+	    [72676137] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 83700,				
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),	
+	    [57948798] = ({
+            label = L["Wrapped Spool"],
+            cont = true,			
+            Zamro = true,
+            note = L["Wrapped Spool Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\tokens.tga",
+        }),			
+	    [48346950] = ({
+            label = L["Sturdy Chest"],
+            cont = true,	
+            quest = 83685,				
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
