@@ -13,14 +13,14 @@ ns.map_spellids = {
     -- [2269] = 0, -- Earthcrawl Mines / шахты Землескребов ++
     -- [2249] = 0, -- Fungal Folly / Грибных гадостей ++
     -- [2310] = 0, -- Skittering Breach / Снующего пролома ++ 
-    -- [2277] = 0, -- Nightfall Sanctum / Святыни Сумерек
+    -- [2277] = 0, -- Nightfall Sanctum / Святыни Сумерек ++
     -- [2302] = 0, -- The Dread Pit / Ямы Ужаса ++ 
-	-- [2259] = 0, -- Tak-Rethan Abyss / глубин Так-Ретана (2314) +
+	-- [2259] = 0, -- Tak-Rethan Abyss / глубин Так-Ретана ++
     -- [2250] = 0, -- Kriegval's Rest / Покоя Кригвала ++
     -- [2312] = 0, -- Mycomancer chestrn / пещеры микомантов ++
-    -- [2299] = 0, -- The Underkeep / Подоплота
-    -- [2313] = 0, -- The Spiral Weave / Сплетенной Спирали (2347) +
-    -- [2301] = 0, -- The Sinkhole / Воронки +
+    -- [2299] = 0, -- The Underkeep / Подоплота +-
+    -- [2347] = 0, -- The Spiral Weave / Сплетенной Спирали ++
+    -- [2301] = 0, -- The Sinkhole / Воронки +-
 }
 
 ns.points = {
@@ -28,6 +28,7 @@ ns.points = {
         [70584444] = ({
             label = L["Sturdy Chest 2"],
             cont = true,
+            quest = 83670,			
             Zamro = true,
             note = L["Sturdy Chest 2 Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
@@ -35,6 +36,7 @@ ns.points = {
         [51905539] = ({
             label = L["Sturdy Chest"],
             cont = true,
+            quest = 83688,				
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
@@ -42,6 +44,7 @@ ns.points = {
 		[38887406] = ({
             label = L["Sturdy Chest"],
             cont = true,
+            quest = 83454,				
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
@@ -49,6 +52,7 @@ ns.points = {
 		[40203704] = ({
             label = L["Sturdy Chest 3"],
             cont = true,
+            quest = 83701,				
             Zamro = true,
             note = L["Sturdy Chest 3 Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
@@ -91,17 +95,26 @@ ns.points = {
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
         }),		
     },
-    [2259] = { -- Tak-Rethan Abyss / глубин Так-Ретана (2314)
+    [2259] = { -- Tak-Rethan Abyss / глубин Так-Ретана
         [65235280] = ({
             label = L["Sturdy Chest"],
-            cont = true,		
+            cont = true,	
+            quest = 83686,				
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
         }),
+	    [42645113] = ({
+            label = L["Wrapped Spool"],
+            cont = true,			
+            Zamro = true,
+            note = L["Wrapped Spool Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\tokens.tga",
+        }),			
 	    [44925025] = ({
             label = L["Sturdy Chest"],
             cont = true,
+            quest = 83687,			
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
@@ -109,6 +122,7 @@ ns.points = {
 	    [35195852] = ({
             label = L["Sturdy Chest"],
             cont = true,
+            quest = 83669,				
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
@@ -116,15 +130,17 @@ ns.points = {
 	    [41517503] = ({
             label = L["Sturdy Chest"],
             cont = true,
+            quest = 83651,				
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
 	    }),		
     },
-    [2313] = { -- The Spiral Weave / Сплетенной Спирали
+    [2347] = { -- The Spiral Weave / Сплетенной Спирали
         [50024579] = ({
             label = L["Sturdy Chest"],
             cont = true,
+            quest = 83649,				
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
@@ -132,6 +148,7 @@ ns.points = {
 	    [36441121] = ({
             label = L["Sturdy Chest 4"],
             cont = true,
+            quest = 83661,				
             Zamro = true,
             note = L["Sturdy Chest 4 Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
@@ -139,6 +156,7 @@ ns.points = {
 	    [46074624] = ({
             label = L["Sturdy Chest 5"],
             cont = true,
+            quest = 83681,				
             Zamro = true,
             note = L["Sturdy Chest 5 Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
@@ -146,10 +164,18 @@ ns.points = {
 	    [42584775] = ({
             label = L["Sturdy Chest 6"],
             cont = true,
+            quest = 83662,			
             Zamro = true,
             note = L["Sturdy Chest 6 Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
-	    }),			
+	    }),		
+	    [42654522] = ({
+            label = L["Wrapped Spool"],
+            cont = true,			
+            Zamro = true,
+            note = L["Wrapped Spool Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\tokens.tga",
+        }),				
     },
 	[2312] = { -- Mycomancer chestrn / пещеры микомантов
         [49662186] = ({
@@ -422,4 +448,45 @@ ns.points = {
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
         }),	
     },		
+    [2299] = { -- The Underkeep / Подоплота
+        [63763260] = ({
+           label = L["Sturdy Chest"],
+           cont = true,
+           quest = 83682,			   
+           Zamro = true,
+           note = L["Sturdy Chest Note"],
+           pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+	    [72248881] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 83697,			
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+	    [35753479] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 83664,				
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),	
+	    [66993916] = ({
+            label = L["Wrapped Spool"],
+            cont = true,			
+            Zamro = true,
+            note = L["Wrapped Spool Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\tokens.tga",
+        }),			
+	    [00000000] = ({
+            label = L["Sturdy Chest"],
+            cont = true,	
+            quest = 00000,				
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),	
+    },			
 }
