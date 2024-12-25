@@ -180,7 +180,14 @@ ns.points = {
             Zamro = true,
             note = L["Wrapped Spool Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\closed.tga",
-        }),				
+        }),	
+	    [49353483] = ({
+            label = L["Wrapped Spool"],
+            cont = true,			
+            Zamro = true,
+            note = L["Wrapped Spool Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\closed.tga",
+        }),			
     },
 	[2312] = { -- Mycomancer chestrn / пещеры микомантов
         [49662186] = ({
