@@ -5,7 +5,7 @@
 ## Notes-ruRU: Сундуки и усиления
 ## Author: ZamestoTV
 ## IconTexture: Interface\AddOns\ZamestoTV_Delves\Icons\goblin
-## Version: 1.4.4
+## Version: 1.5.4
 ## DefaultState: enabled
 ## X-Category: Map
 ## SavedVariables: HandyNotes_DelvesDB
@@ -24,3 +24,4 @@ Localization/deDE.lua
 handler.lua
 config.lua
 Delves.lua
+story.lua
