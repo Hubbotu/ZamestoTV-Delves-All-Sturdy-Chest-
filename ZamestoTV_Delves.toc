@@ -5,7 +5,7 @@
 ## Notes-ruRU: Полезный функционал для Вылазок
 ## Author: ZamestoTV
 ## IconTexture: Interface\AddOns\ZamestoTV_Delves\Icons\goblin
-## Version: 2.2.0
+## Version: 2.4.0
 ## DefaultState: enabled
 ## X-Category: Map
 ## SavedVariables: HandyNotes_DelvesDB
@@ -29,5 +29,7 @@ Quest.lua
 Coffer.lua
 Bountiful.lua
 BountyReminder.lua
+zdh.lua
+dmt.lua
 
 
