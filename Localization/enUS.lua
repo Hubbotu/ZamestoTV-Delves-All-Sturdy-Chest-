@@ -34,11 +34,12 @@ L["Sturdy Chest 13"] = "|cFFFFFFFFSturdy Chest|r"
 L["Sturdy Chest 13 Note"] = "During Story |cFF1EFF00Weaver Rescue|r."
 L["Sturdy Chest 14"] = "|cFFFFFFFFSturdy Chest|r"
 L["Sturdy Chest 14 Note"] = "During Story |cFF1EFF00Torture Victims|r."
-
-L["Wrapped Spool"] = "|cFFFFFFFFPuzzle|r"
-L["Wrapped Spool Note"] = "|cFFFFFFFFSolve the puzzle and get a power-up.|r"
-L["Wrapped Spool 1"] = "|cFFFFFFFFPower-up|r"
-L["Wrapped Spool 1 Note"] = "|cFFFFFFFFGet a boost.|r"
+L["Sturdy Chest 15"] = "|cFFFFFFFFSturdy Chest|r"
+L["Sturdy Chest 15 Note"] = "On the crossbar."
+L["Sturdy Chest 16"] = "|cFFFFFFFFJump|r"
+L["Sturdy Chest 16 Note"] = "Jump from here."
+L["Sturdy Chest 17"] = "|cFFFFFFFFJump|r"
+L["Sturdy Chest 17 Note"] = "Jump from here."
 
 -- Waypoints
 L["Create waypoint"] = true

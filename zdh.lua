@@ -86,8 +86,9 @@ local DelvesBountifulList = {
     Zones = {
         ["Isle of Dorn"] = { uiMapID = 2248, delves = {{id = 7787, name = "Earthcrawl Mines"}, {id = 7781, name = "Kriegval's Rest"}, {id = 7779, name = "Fungal Folly"}} },
         ["Hallowfall"] = { uiMapID = 2215, delves = {{id = 7789, name = "Skittering Breach"}, {id = 7785, name = "Nightfall Sanctum"}, {id = 7783, name = "The Sinkhole"}, {id = 7780, name = "Mycomancer Cavern"}} },
-        ["The Ringing Deeps"] = { uiMapID = 2214, delves = {{id = 7782, name = "The Waterworks"}, {id = 7788, name = "The Dread Pit"}} },
+        ["The Ringing Deeps"] = { uiMapID = 2214, delves = {{id = 7782, name = "The Waterworks"}, {id = 7788, name = "The Dread Pit"}, {id = 8181, name = "Excavation Site 9"}} },
         ["Azj-Kahet"] = { uiMapID = 2255, delves = {{id = 7790, name = "The Spiral Weave"}, {id = 7784, name = "Tak-Rethan Abyss"}, {id = 7786, name = "The Underkeep"}} },
+        ["Undermine"] = { uiMapID = 2346, delves = {{id = 8246, name = "Sidestreet Sluice"}} },		
     }
 }
 
@@ -135,6 +136,8 @@ function DelvesBountifulList:LayoutText()
         ["The Spiral Weave"] = true,
         ["Tak-Rethan Abyss"] = true,
         ["The Underkeep"] = true,
+        ["Excavation Site 9"] = true,
+        ["Sidestreet Sluice"] = true,		
     }
 
     for zoneName, zoneData in pairs(self.Zones) do

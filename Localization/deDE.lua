@@ -35,11 +35,12 @@ L["Sturdy Chest 13"] = "|cFFFFFFFFStabile Truhe|r"
 L["Sturdy Chest 13 Note"] = "Während der Quest |cFF1EFF00Weber Rettung|r."
 L["Sturdy Chest 14"] = "|cFFFFFFFFStabile Truhe|r"
 L["Sturdy Chest 14 Note"] = "Während der Quest |cFF1EFF00Folteropfer|r."
-
-L["Wrapped Spool"] = "|cFFFFFFFFRätsel|r"
-L["Wrapped Spool Note"] = "|cFFFFFFFFLöse das Rätsel und erhalte einen Power-up.|r"
-L["Wrapped Spool 1"] = "|cFFFFFFFFPower-up|r"
-L["Wrapped Spool 1 Note"] = "|cFFFFFFFFErhalte einen Schub.|r"
+L["Sturdy Chest 15"] = "|cFFFFFFFFStabile Truhe|r"
+L["Sturdy Chest 15 Note"] = "An der Latte."
+L["Sturdy Chest 16"] = "|cFFFFFFFFSpringen|r"
+L["Sturdy Chest 16 Note"] = "Von hier springen."
+L["Sturdy Chest 17"] = "|cFFFFFFFFSpringen|r"
+L["Sturdy Chest 17 Note"] = "Von hier springen."
 
 -- Wegpunkte
 L["Create waypoint"] = "Wegpunkt erstellen"

@@ -1,17 +1,20 @@
-## Interface: 110007
-## Title: ZamestoTV Delves helper
-## Title-ruRU: ZamestoTV Помощник по Вылазкам
+## Interface: 110100
+## Title: Delves helper
+## Title-ruRU: Помощник по Вылазкам
 ## Notes: Useful functionality for Delves
 ## Notes-ruRU: Полезный функционал для Вылазок
 ## Author: ZamestoTV
 ## IconTexture: Interface\AddOns\ZamestoTV_Delves\Icons\goblin
-## Version: 2.4.0
+## Version: 2.4.5
 ## DefaultState: enabled
 ## X-Category: Map
 ## SavedVariables: HandyNotes_DelvesDB
 ## RequiredDeps: HandyNotes
 ## OptionalDeps: 
 ## DefaultState: Enabled
+
+## Category-enUS: Addons ZamestoTV
+## Category-ruRU: Аддоны ZamestoTV
 
 #@no-lib-strip@
 embeds.xml

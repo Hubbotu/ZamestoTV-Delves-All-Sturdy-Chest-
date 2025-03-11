@@ -21,6 +21,9 @@ ns.map_spellids = {
     -- [2299] = 0, -- The Underkeep / Подоплота +-
     -- [2347] = 0, -- The Spiral Weave / Сплетенной Спирали ++
     -- [2301] = 0, -- The Sinkhole / Воронки +-
+    -- [2420] = 0, -- Sidestreet Sluice - The Pits
+    -- [2422] = 0, -- Sidestreet Sluice - The High Decks
+    -- [2396] = 0, -- Excavation Site 9
 }
 
 ns.points = {
@@ -108,14 +111,7 @@ ns.points = {
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
-        }),
-	    [42645113] = ({
-            label = L["Wrapped Spool"],
-            cont = true,			
-            Zamro = true,
-            note = L["Wrapped Spool Note"],
-            pathto = "Interface\\Addons\\"..myname.."\\Icons\\closed.tga",
-        }),			
+        }),	
 	    [44925025] = ({
             label = L["Sturdy Chest"],
             cont = true,
@@ -173,21 +169,7 @@ ns.points = {
             Zamro = true,
             note = L["Sturdy Chest 6 Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
-	    }),		
-	    [42654522] = ({
-            label = L["Wrapped Spool"],
-            cont = true,			
-            Zamro = true,
-            note = L["Wrapped Spool Note"],
-            pathto = "Interface\\Addons\\"..myname.."\\Icons\\closed.tga",
-        }),	
-	    [49353483] = ({
-            label = L["Wrapped Spool"],
-            cont = true,			
-            Zamro = true,
-            note = L["Wrapped Spool Note"],
-            pathto = "Interface\\Addons\\"..myname.."\\Icons\\closed.tga",
-        }),			
+	    }),				
     },
 	[2312] = { -- Mycomancer chestrn / пещеры микомантов
         [49662186] = ({
@@ -255,14 +237,7 @@ ns.points = {
             Zamro = true,
             note = L["Sturdy Chest 8 Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
-        }),		
-	    [47551513] = ({
-            label = L["Wrapped Spool"],
-            cont = true,				
-            Zamro = true,
-            note = L["Wrapped Spool Note"],
-            pathto = "Interface\\Addons\\"..myname.."\\Icons\\closed.tga",
-        }),				
+        }),					
     },
     [2249] = { -- Fungal Folly / Грибных гадостей
         [58514703] = ({
@@ -297,13 +272,6 @@ ns.points = {
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
         }),	
-	    [41937961] = ({
-            label = L["Wrapped Spool 1"],
-            cont = true,				
-            Zamro = true,
-            note = L["Wrapped Spool 1 Note"],
-            pathto = "Interface\\Addons\\"..myname.."\\Icons\\closed.tga",
-        }),		
 	    [55804514] = ({
             label = L["Sturdy Chest 10"],
             cont = true,
@@ -345,14 +313,7 @@ ns.points = {
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
-        }),
-	    [41637871] = ({
-            label = L["Wrapped Spool"],
-            cont = true,				
-            Zamro = true,
-            note = L["Wrapped Spool Note"],
-            pathto = "Interface\\Addons\\"..myname.."\\Icons\\closed.tga",
-        }),		
+        }),	
 	    [36231662] = ({
             label = L["Sturdy Chest"],
             cont = true,
@@ -454,13 +415,6 @@ ns.points = {
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
-        }),	
-	    [57948798] = ({
-            label = L["Wrapped Spool"],
-            cont = true,			
-            Zamro = true,
-            note = L["Wrapped Spool Note"],
-            pathto = "Interface\\Addons\\"..myname.."\\Icons\\closed.tga",
         }),			
 	    [48346950] = ({
             label = L["Sturdy Chest"],
@@ -470,6 +424,92 @@ ns.points = {
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
         }),	
+    },	
+    [2420] = { -- Sidestreet Sluice - The Pits
+	    [33437316] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 86790,				
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),	
+	    [61616581] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 86787,			
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+	    [74447419] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 86788,				
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),	
+    },		
+    [2422] = { -- Sidestreet Sluice - The High Decks
+	    [77573947] = ({
+            label = L["Sturdy Chest 15"],
+            cont = true,
+            quest = 86789,				
+            Zamro = true,
+            note = L["Sturdy Chest 15 Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),	
+	    [72803794] = ({
+            label = L["Sturdy Chest 16"],
+            cont = true,
+            quest = 86789,			
+            Zamro = true,
+            note = L["Sturdy Chest 16 Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\pport.tga",
+        }),
+    },
+    [2396] = { -- Excavation Site 9
+	    [50906155] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 86347,				
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),	
+	    [57014680] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 86345,			
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+	    [33585917] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 86346,				
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),	
+	    [73363995] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 86343,				
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),	
+	    [71953763] = ({
+            label = L["Sturdy Chest 17"],
+            cont = true,
+            quest = 86343,			
+            Zamro = true,
+            note = L["Sturdy Chest 17 Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\pport.tga",
+        }),		
     },		
     [2299] = { -- The Underkeep / Подоплота
         [63763260] = ({
@@ -495,14 +535,7 @@ ns.points = {
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
-        }),	
-	    [66993916] = ({
-            label = L["Wrapped Spool"],
-            cont = true,			
-            Zamro = true,
-            note = L["Wrapped Spool Note"],
-            pathto = "Interface\\Addons\\"..myname.."\\Icons\\closed.tga",
-        }),			
+        }),		
 	    [38946882] = ({
             label = L["Sturdy Chest 14"],
             cont = true,	

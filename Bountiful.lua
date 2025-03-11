@@ -6,9 +6,13 @@ VladDelves:RegisterEvent("PLAYER_REGEN_ENABLED")
 local G = {
     DelveButtons = {},
     ExpansionMapID = 2274, -- Khaz Algar
+    ExpansionExtraMapIDs = {
+        2274, -- Khaz Algar
+        2346, -- Undermine
+    },
     config = {
-        onlyBountiful = true, -- Always show only Bountiful Delves
-        prioBountiful = false, -- No need for prioritization since only Bountiful Delves are shown
+        onlyBountiful = true,
+        prioBountiful = false,
         taintSafe = false
     }
 }
@@ -18,18 +22,28 @@ function G.GetDelves()
     local temp = {}
     local onlyBountiful = G.config.onlyBountiful
     local areas = C_Map.GetMapChildrenInfo(G.ExpansionMapID, Enum.UIMapType.Zone, true)
+    
+    -- Add extra map IDs
+    for _, mapID in ipairs(G.ExpansionExtraMapIDs) do
+        local area = C_Map.GetMapInfo(mapID)
+        if area then
+            area.isExtraMap = true
+            table.insert(areas, area)
+        end
+    end
+    
     for _, area in ipairs(areas) do
         local mapID = area.mapID
         local areaPOIs = C_AreaPoiInfo.GetDelvesForMap(mapID)
         for _, areaPoiID in ipairs(areaPOIs) do
             local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(mapID, areaPoiID)
-            if poiInfo and poiInfo.atlasName and poiInfo.isPrimaryMapForPOI then
+            if poiInfo and poiInfo.atlasName and (poiInfo.isPrimaryMapForPOI or area.isExtraMap) then
                 if not dupe[poiInfo.name] then
                     dupe[poiInfo.name] = true
                     local bountiful = not not poiInfo.atlasName:find("bountiful")
                     if bountiful then
                         temp[#temp + 1] = {
-                            bountiful = true,
+                            bountiful = bountiful,
                             atlas = poiInfo.atlasName,
                             name = poiInfo.name,
                             zone = area.name,
@@ -64,7 +78,7 @@ local function OnDelveClick(self, button, down)
     WorldMapFrame:SetMapID(delve.mapID)
     if down then return end
     for pin in WorldMapFrame:EnumeratePinsByTemplate("DelveEntrancePinTemplate") do
-        if delve.areaPoiID == pin.areaPoiID then
+        if delve.areaPoiID == pin.areaPoiID then -- Changed from pin.poiInfo.areaPoiID to pin.areaPoiID
             pin:OnClick(button, down)
             break
         end
@@ -72,11 +86,11 @@ local function OnDelveClick(self, button, down)
 end
 
 function G.CreateDelveButton(frame, index)
-    local maxPerRow = 4  -- Number of buttons per row
+    local maxPerRow = 4
     local rowIndex = (index - 1) % maxPerRow
     local colIndex = math.floor((index - 1) / maxPerRow) % 2
-    local yOffset = -colIndex * 30  -- Offset for second row
-    local xOffset = rowIndex * 30   -- Horizontal spacing
+    local yOffset = -colIndex * 30
+    local xOffset = rowIndex * 30
     
     local button = CreateFrame("Button", nil, frame, "SecureActionButtonTemplate")
     button:SetPoint("TOPLEFT", frame, "TOPLEFT", xOffset, yOffset - 64)

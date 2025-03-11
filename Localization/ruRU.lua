@@ -34,11 +34,12 @@ L["Sturdy Chest 13"] = "|cFFFFFFFFПрочный сундук|r"
 L["Sturdy Chest 13 Note"] = "Во время сюжета |cFF1EFF00Спасение Прядильщицы|r."
 L["Sturdy Chest 14"] = "|cFFFFFFFFПрочный сундук|r"
 L["Sturdy Chest 14 Note"] = "Во время сюжета |cFF1EFF00Жертвы пыток|r."
-
-L["Wrapped Spool"] = "|cFFFFFFFFГоловоломка|r"
-L["Wrapped Spool Note"] = "|cFFFFFFFFРешите головоломку и получите усиление.|r"
-L["Wrapped Spool 1"] = "|cFFFFFFFFУсиление|r"
-L["Wrapped Spool 1 Note"] = "|cFFFFFFFFПолучите усиление.|r"
+L["Sturdy Chest 15"] = "|cFFFFFFFFПрочный сундук|r"
+L["Sturdy Chest 15 Note"] = "На перекладине."
+L["Sturdy Chest 16"] = "|cFFFFFFFFПрыжок|r"
+L["Sturdy Chest 16 Note"] = "Перейти отсюда."
+L["Sturdy Chest 17"] = "|cFFFFFFFFПрыжок|r"
+L["Sturdy Chest 17 Note"] = "Перейти отсюда."
 
 -- Waypoints
 L["Create waypoint"] = "Создать путевую точку"
