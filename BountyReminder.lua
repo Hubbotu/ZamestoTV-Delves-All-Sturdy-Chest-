@@ -2,8 +2,8 @@
 local addonName = "BountyReminder"
 
 -- Constants
-local ITEM_ID = 227784
-local SPELL_ID = 460831
+local ITEM_ID = 233071
+local SPELL_ID = 473218
 local ICON_TEXTURE = 1064187
 local TEXT = "Use Delver's Bounty!"
 
