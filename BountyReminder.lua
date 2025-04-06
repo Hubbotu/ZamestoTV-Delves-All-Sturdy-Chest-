@@ -7,6 +7,9 @@ local SPELL_ID = 473218
 local ICON_TEXTURE = 1064187
 local TEXT = "Use Delver's Bounty!"
 
+-- SavedVariables
+BountyReminderDB = BountyReminderDB or { enabled = true }
+
 -- Frame for the icon and text
 local frame = CreateFrame("Frame", nil, UIParent)
 frame:SetSize(64, 64)
@@ -73,20 +76,30 @@ local function OnEvent(self, event, ...)
             if input == "on" then
                 frame:RegisterEvent("BAG_UPDATE")
                 frame:RegisterEvent("UNIT_AURA")
+                BountyReminderDB.enabled = true
                 print("Bounty Reminder: Enabled")
             elseif input == "off" then
                 frame:UnregisterEvent("BAG_UPDATE")
                 frame:UnregisterEvent("UNIT_AURA")
                 frame:Hide()
+                BountyReminderDB.enabled = false
                 print("Bounty Reminder: Disabled")
             else
                 print("Usage: /bounty on|off")
             end
         end
         
-        -- Enable by default
-        frame:RegisterEvent("BAG_UPDATE")
-        frame:RegisterEvent("UNIT_AURA")
+        -- Load saved state
+        if BountyReminderDB.enabled then
+            frame:RegisterEvent("BAG_UPDATE")
+            frame:RegisterEvent("UNIT_AURA")
+            print("Bounty Reminder: Enabled by default")
+        else
+            frame:UnregisterEvent("BAG_UPDATE")
+            frame:UnregisterEvent("UNIT_AURA")
+            frame:Hide()
+            print("Bounty Reminder: Disabled by default")
+        end
         
         -- Enable frame movement
         frame:EnableMouse(true)
@@ -108,8 +121,6 @@ local function OnEvent(self, event, ...)
                 frame:StopMovingOrSizing()
             end
         end)
-        
-        print("Bounty Reminder: Enabled by default")
     end
 end
 
