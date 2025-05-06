@@ -1,11 +1,11 @@
-## Interface: 110100
+## Interface: 110105
 ## Title: Delves helper
 ## Title-ruRU: Помощник по Вылазкам
 ## Notes: Useful functionality for Delves
 ## Notes-ruRU: Полезный функционал для Вылазок
 ## Author: ZamestoTV
 ## IconTexture: Interface\AddOns\ZamestoTV_Delves\Icons\goblin
-## Version: 2.5.8
+## Version: 2.7.5
 ## DefaultState: enabled
 ## X-Category: Map
 ## SavedVariables: HandyNotes_DelvesDB, BountyReminderDB, DelveCurioReminderDB
@@ -35,4 +35,5 @@ BountyReminder.lua
 zdh.lua
 dmt.lua
 brannhelps.lua
+GWA.lua
 
