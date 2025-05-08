@@ -4,12 +4,12 @@ local addonName, addon = ...
 local L = {}
 if GetLocale() == "ruRU" then
     L["Explorer"] = "Исследователь"
-    L["Adventurer"] = "Авантюрист"
+    L["Adventurer"] = "Приключенец"
     L["Veteran"] = "Ветеран"
-    L["Champion"] = "Чемпион"
+    L["Champion"] = "Защитник"
     L["Hero"] = "Герой"
-    L["Myth"] = "Миф"
-    L["Run"] = "Прогон"
+    L["Myth"] = "Легенда"
+    L["Run"] = "Run"
     L["Vault"] = "Хранилище"
 else
     L["Explorer"] = "Explorer"
@@ -121,12 +121,12 @@ local tracks = {
 }
 
 local trackColors = {
-    Explorer = {0.60000002384186, 0.60000002384186, 0.60000002384186, 1},
-    Adventurer = {0.85098046064377, 0.85098046064377, 0.85098046064377, 1},
-    Veteran = {0.33725491166115, 0.77647066116333, 0.50196081399918, 1},
-    Champion = {0.35294118523598, 0.5686274766922, 0.78431379795074, 1},
-    Hero = {0.67058825492859, 0.086274512112141, 0.90980398654938, 1},
-    Myth = {1, 0.49803924560547, 0, 1},
+    Explorer = {0.6156862745098, 0.6156862745098, 0.6156862745098, 1}, -- #9d9d9d
+    Adventurer = {1, 1, 1, 1}, -- #fff
+    Veteran = {0.11764705882353, 1, 0, 1}, -- #1eff00
+    Champion = {0, 0.43921568627451, 0.86666666666667, 1}, -- #0070dd
+    Hero = {0.57647058823529, 0.27058823529412, 1, 1}, -- #9345ff
+    Myth = {1, 0.50196078431373, 0, 1}, -- #ff8000
 }
 
 -- Frame creation
@@ -219,13 +219,13 @@ end
 -- Raid data display
 local function CreateRaidData()
     local raidFrame = CreateFrame("Frame", nil, mainFrame)
-    raidFrame:SetPoint("TOPLEFT", WeeklyRewardsFrame, "TOPLEFT", 150 * 0.8, -80 * 0.8) -- Changed from 30 to 80 (50 pixels right)
-    raidFrame:SetSize(150 * 0.8, 30 * 0.8) -- Reduced height from 50 to 30 (20 pixels less)
+    raidFrame:SetPoint("TOPLEFT", WeeklyRewardsFrame, "TOPLEFT", 150 * 0.8, -80 * 0.8)
+    raidFrame:SetSize(150 * 0.8, 30 * 0.8)
     raidFrame:Show()
     
     -- Headers
     for i, header in ipairs(lootData.raid.headers) do
-        local xOffset = i * 30 -- Changed from (i + 1)*25 to i*28 (3 pixels wider columns)
+        local xOffset = i * 30
         CreateTextureFrame(
             raidFrame, 30, 16, {0, 0, 0, 1}, header, "arial.ttf", 8, "CENTER",
             raidFrame, "TOPLEFT", "TOPLEFT", xOffset, 0
@@ -245,7 +245,7 @@ local function CreateRaidData()
             local ilvl = lootData.raid[header].bosses[key]
             local track = tracks[ilvl]
             local color = trackColors[track] or {1, 1, 1, 1} -- Safeguard for nil track
-            local xOffset = j * 30 -- Changed from (j + 1)*25 to j*28 (3 pixels wider columns)
+            local xOffset = j * 30
             CreateTextureFrame(
                 raidFrame, 30, 16, color, ilvl, "arial.ttf", 8, "CENTER",
                 raidFrame, "TOPLEFT", "TOPLEFT", xOffset, yOffset
@@ -346,25 +346,68 @@ local function InitializeDisplays()
     mainFrame:Show()
 end
 
+-- SavedVariables to store frame visibility state
+local function SetupSavedVariables()
+    GWA_SavedVars = GWA_SavedVars or {
+        framesVisible = true -- Default to visible
+    }
+end
+
+-- Function to toggle frame visibility
+local function ToggleFrames()
+    GWA_SavedVars.framesVisible = not GWA_SavedVars.framesVisible
+    if GWA_SavedVars.framesVisible then
+        mainFrame:Show()
+    else
+        mainFrame:Hide()
+    end
+    print("GreatVaultInfoFrame " .. (GWA_SavedVars.framesVisible and "shown" or "hidden"))
+end
+
+-- Slash command handler
+SLASH_GWA1 = "/gwa"
+SlashCmdList["GWA"] = function()
+    ToggleFrames()
+end
+
 -- Event handling
 mainFrame:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1 == "Blizzard_WeeklyRewards" then
-        if WeeklyRewardsFrame then
-            -- Hook OnShow and OnHide
-            hooksecurefunc(WeeklyRewardsFrame, "Show", function()
-                InitializeDisplays()
-            end)
-            hooksecurefunc(WeeklyRewardsFrame, "Hide", function()
+    if event == "ADDON_LOADED" then
+        if arg1 == addonName then
+            SetupSavedVariables()
+            -- Apply saved visibility state
+            if not GWA_SavedVars.framesVisible then
                 mainFrame:Hide()
-            end)
-            -- Initialize if WeeklyRewardsFrame is already shown
-            if WeeklyRewardsFrame:IsShown() then
-                InitializeDisplays()
+            end
+        elseif arg1 == "Blizzard_WeeklyRewards" then
+            if WeeklyRewardsFrame then
+                -- Hook OnShow and OnHide
+                hooksecurefunc(WeeklyRewardsFrame, "Show", function()
+                    InitializeDisplays()
+                    -- Respect saved visibility state
+                    if not GWA_SavedVars.framesVisible then
+                        mainFrame:Hide()
+                    end
+                end)
+                hooksecurefunc(WeeklyRewardsFrame, "Hide", function()
+                    mainFrame:Hide()
+                end)
+                -- Initialize if WeeklyRewardsFrame is already shown
+                if WeeklyRewardsFrame:IsShown() then
+                    InitializeDisplays()
+                    if not GWA_SavedVars.framesVisible then
+                        mainFrame:Hide()
+                    end
+                end
             end
         end
     elseif event == "PLAYER_LOGIN" then
+        SetupSavedVariables()
         if C_AddOns.IsAddOnLoaded("Blizzard_WeeklyRewards") and WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown() then
             InitializeDisplays()
+            if not GWA_SavedVars.framesVisible then
+                mainFrame:Hide()
+            end
         end
     end
 end)
