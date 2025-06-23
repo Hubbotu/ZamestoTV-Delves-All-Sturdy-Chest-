@@ -14,6 +14,15 @@ local G = {
         onlyBountiful = true,
         prioBountiful = false,
         taintSafe = false
+    },
+    -- Mapping of bountiful areaPoiID to overchargedUiWidgetID from Config.lua
+    DelveConfig = {
+        [7779] = 7105, -- Fungal Folly
+        [7781] = 7041, -- Kriegval's Rest
+        [7785] = 7052, -- Nightfall Sanctum
+        [7789] = 7051, -- Skittering Breach
+        [7790] = 7053, -- The Spiral Weave
+        [8246] = 7104, -- Sidestreet Sluice
     }
 }
 
@@ -42,8 +51,16 @@ function G.GetDelves()
                     dupe[poiInfo.name] = true
                     local bountiful = not not poiInfo.atlasName:find("bountiful")
                     if bountiful then
+                        -- Check for Overcharged status
+                        local isOvercharged = false
+                        local overchargedUiWidgetID = G.DelveConfig[areaPoiID]
+                        if overchargedUiWidgetID then
+                            local visInfo = C_UIWidgetManager.GetSpacerVisualizationInfo(overchargedUiWidgetID)
+                            isOvercharged = visInfo and visInfo.shownState == 1
+                        end
                         temp[#temp + 1] = {
                             bountiful = bountiful,
+                            isOvercharged = isOvercharged,
                             atlas = poiInfo.atlasName,
                             name = poiInfo.name,
                             zone = area.name,
@@ -56,6 +73,10 @@ function G.GetDelves()
         end
     end
     table.sort(temp, function(a, b)
+        -- Prioritize Overcharged delves, then sort by zone and name
+        if a.isOvercharged ~= b.isOvercharged then
+            return a.isOvercharged
+        end
         return a.zone > b.zone or (a.zone == b.zone and a.name > b.name)
     end)
     return temp
@@ -66,6 +87,11 @@ local function OnDelveEnter(self)
     GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
     GameTooltip:AddLine(format("|A:%s:0:0|a %s", delve.atlas, delve.name), 1, 1, 1, false)
     GameTooltip:AddLine(format("%s", delve.zone), 1, 1, 1, false)
+    if delve.isOvercharged then
+        GameTooltip:AddLine("Overcharged Today", 1, 0.5, 0, false)
+    else
+        GameTooltip:AddLine("Bountiful", 0, 1, 0, false)
+    end
     GameTooltip:Show()
 end
 
@@ -78,7 +104,7 @@ local function OnDelveClick(self, button, down)
     WorldMapFrame:SetMapID(delve.mapID)
     if down then return end
     for pin in WorldMapFrame:EnumeratePinsByTemplate("DelveEntrancePinTemplate") do
-        if delve.areaPoiID == pin.areaPoiID then -- Changed from pin.poiInfo.areaPoiID to pin.areaPoiID
+        if delve.areaPoiID == pin.areaPoiID then
             pin:OnClick(button, down)
             break
         end
@@ -101,6 +127,13 @@ function G.CreateDelveButton(frame, index)
     button.Icon = button:CreateTexture(nil, "OVERLAY")
     button.Icon:SetAllPoints()
     button.Icon:SetAtlas("Dungeon")
+    -- Create border texture for Overcharged outline
+    button.Border = button:CreateTexture(nil, "BORDER")
+    button.Border:SetPoint("CENTER", button.Icon)
+    button.Border:SetSize(26, 26) -- 1px outline
+    button.Border:SetTexture("Interface\\Buttons\\UI-Quickslot-Depress")
+    button.Border:SetVertexColor(0.4, 0.6, 1, 1) -- Brighter blue (R=0.4, G=0.6, B=1, A=1)
+    button.Border:Hide() -- Hidden by default
     button:HookScript("OnLeave", GameTooltip_Hide)
     button:HookScript("OnEnter", OnDelveEnter)
     button:HookScript("OnClick", OnDelveClick)
@@ -121,6 +154,12 @@ function G.DelvesUpdate(self)
         end
         button.delve = delve
         button.Icon:SetAtlas(delve.atlas)
+        -- Show blue border for Overcharged delves
+        if delve.isOvercharged then
+            button.Border:Show()
+        else
+            button.Border:Hide()
+        end
         button:Show()
     end
 end
@@ -131,7 +170,7 @@ function G.DelvesInit()
     frame.layoutIndex = 3
     frame:SetWidth(120)
     frame.ButtonPanelBackground:Hide()
-    frame.PanelTitle:SetText("Bountiful")
+    frame.PanelTitle:SetText("Bountiful & Overcharged")
     frame.PanelDescription:SetText("")
     panel:HookScript("OnShow", function(...) G.DelvesUpdate(frame, ...) panel:Layout() end)
 end
