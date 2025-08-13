@@ -38,18 +38,18 @@ frame.radiantLabel:SetWidth(100)  -- Matching width with keysLabel
 frame.radiantLabel:SetJustifyH("CENTER")  -- Center text
 frame.radiantLabel:SetText("Radiant Echo")
 
--- Create textures for items 235897 and 236096
+-- Create textures for items 246771 and 245653
 frame.item1Texture = frame:CreateTexture(nil, "ARTWORK")
 frame.item1Texture:SetSize(30, 30)  -- 30x30 size
 frame.item1Texture:SetPoint("TOP", frame.radiantLabel, "BOTTOM", 0, -3)  -- Below Radiant Echo label
-frame.item1Texture:SetTexture("Interface\\Icons\\spell_holy_pureofheart")  -- Icon for item 235897
+frame.item1Texture:SetTexture("Interface\\Icons\\spell_holy_pureofheart")  -- Icon for item 246771
 
 frame.item2Texture = frame:CreateTexture(nil, "ARTWORK")
 frame.item2Texture:SetSize(30, 30)  -- 30x30 size
 frame.item2Texture:SetPoint("LEFT", frame.text, "RIGHT", 5, 0)  -- To the right of frame.text
-frame.item2Texture:SetTexture("Interface\\Icons\\inv_gizmo_hardenedadamantitetube")  -- Icon for item 236096
+frame.item2Texture:SetTexture("Interface\\Icons\\inv_gizmo_hardenedadamantitetube")  -- Icon for item 245653
 
--- Create FontString for item 235897 quantity, to the right of the icon
+-- Create FontString for item 246771 quantity, to the right of the icon
 frame.item1Quantity = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 frame.item1Quantity:SetPoint("LEFT", frame.item1Texture, "RIGHT", 5, 0)  -- Positioned to the right of item1Texture
 frame.item1Quantity:SetTextColor(1, 1, 1, 1)  -- White, no color highlighting
@@ -57,7 +57,7 @@ frame.item1Quantity:SetShadowColor(0, 0, 0, 1)
 frame.item1Quantity:SetShadowOffset(-1, -1)
 frame.item1Quantity:SetFont("Fonts\\FRIZQT__.TTF", 12)
 
--- Create FontString for item 236096 quantity with "/100", to the right of the icon
+-- Create FontString for item 245653 quantity with "/100", to the right of the icon
 frame.item2Quantity = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 frame.item2Quantity:SetPoint("LEFT", frame.item2Texture, "RIGHT", 5, 0)  -- Positioned to the right of item2Texture
 frame.item2Quantity:SetTextColor(1, 1, 1, 1)  -- White, no color highlighting
@@ -66,8 +66,8 @@ frame.item2Quantity:SetShadowOffset(-1, -1)
 frame.item2Quantity:SetFont("Fonts\\FRIZQT__.TTF", 12)
 
 local function UpdateItemQuantities()
-    local item1Count = GetItemCount(235897) or 0
-    local item2Count = GetItemCount(236096) or 0
+    local item1Count = GetItemCount(246771) or 0
+    local item2Count = GetItemCount(245653) or 0
     frame.item1Quantity:SetText(item1Count)
     frame.item2Quantity:SetText(item2Count .. "\n/100")
 end
