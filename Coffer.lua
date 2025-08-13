@@ -74,10 +74,10 @@ end
 
 local function UpdateKeyCount()
     local keys = 0
-    if C_QuestLog.IsQuestFlaggedCompleted(84736) then keys = keys + 1 end
-    if C_QuestLog.IsQuestFlaggedCompleted(84737) then keys = keys + 1 end
-    if C_QuestLog.IsQuestFlaggedCompleted(84738) then keys = keys + 1 end
-    if C_QuestLog.IsQuestFlaggedCompleted(84739) then keys = keys + 1 end
+    if C_QuestLog.IsQuestFlaggedCompleted(91175) then keys = keys + 1 end
+    if C_QuestLog.IsQuestFlaggedCompleted(91176) then keys = keys + 1 end
+    if C_QuestLog.IsQuestFlaggedCompleted(91177) then keys = keys + 1 end
+    if C_QuestLog.IsQuestFlaggedCompleted(91178) then keys = keys + 1 end
     frame.text:SetText(keys .. "/4")
 end
 
