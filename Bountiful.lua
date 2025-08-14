@@ -9,6 +9,7 @@ local G = {
     ExpansionExtraMapIDs = {
         2274, -- Khaz Algar
         2346, -- Undermine
+        2371, -- Undermine		
     },
     config = {
         onlyBountiful = true,
