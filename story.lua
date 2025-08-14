@@ -17,7 +17,8 @@ local storyAchievements = {
     [40535] = true,
     [40536] = true,
     [41099] = true, 
-    [41098] = true, 	
+    [41098] = true,
+    [42771] = true,  	
 }
 
 -- Function to handle Gossip Show event
