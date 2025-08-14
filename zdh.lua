@@ -70,7 +70,7 @@ local function GetKeyNumber()
 end
 
 local function GetKeyFlags()
-    local keysQuestIDs = {84736, 84737, 84738, 84739}
+    local keysQuestIDs = {91175, 91176, 91177, 91178}
     local keysObtained = 0
     for _, questID in ipairs(keysQuestIDs) do
         if C_QuestLog.IsQuestFlaggedCompleted(questID) then
