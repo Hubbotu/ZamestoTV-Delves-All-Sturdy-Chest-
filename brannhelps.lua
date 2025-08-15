@@ -8,8 +8,8 @@ local ICON_SIZE = 35 -- Size for item and role icons
 -- Curio Data with corrected texture coordinates
 local curioData = {
     TANK = {
-        combatCurio = {name = "Mechasaur EZ-Build Kit", itemID = 234015},
-        utilityCurio = {name = "Three Dimensional Bioprinter", itemID = 230226},
+        combatCurio = {name = "Mana-Tinted Glasses", itemID = 239576},
+        utilityCurio = {name = "Tailwind Conduit", itemID = 239567},
         roleTexture = "Interface\\LFGFrame\\UI-LFG-ICON-ROLES",
         roleTexCoord = {0, 0.26171875, 0.26171875, 0.5234375}, -- Corrected Tank coords
         groupIcon = 135806,
@@ -17,8 +17,8 @@ local curioData = {
         yOffset = -70
     },
     HEALER = {
-        combatCurio = {name = "Mechasaur EZ-Build Kit", itemID = 234015},
-        utilityCurio = {name = "Three Dimensional Bioprinter", itemID = 230226},
+        combatCurio = {name = "Nether Overlay Matrix", itemID = 239580},
+        utilityCurio = {name = "Tailwind Conduit", itemID = 239567},
         roleTexture = "Interface\\LFGFrame\\UI-LFG-ICON-ROLES",
         roleTexCoord = {0.26171875, 0.5234375, 0, 0.26171875}, -- Unchanged, correct
         groupIcon = 135769,
@@ -26,8 +26,8 @@ local curioData = {
         yOffset = 0
     },
     DAMAGE = {
-        combatCurio = {name = "Pinged Augment Chip", itemID = 230234},
-        utilityCurio = {name = "Biofuel Rocket Gear", itemID = 230233},
+        combatCurio = {name = "Quizzical Device", itemID = 239578},
+        utilityCurio = {name = "Tailwind Conduit", itemID = 239567},
         roleTexture = "Interface\\LFGFrame\\UI-LFG-ICON-ROLES",
         roleTexCoord = {0.26171875, 0.5234375, 0.26171875, 0.5234375}, -- Corrected DPS coords
         groupIcon = 135274,
