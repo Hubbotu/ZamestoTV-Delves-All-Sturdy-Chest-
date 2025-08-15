@@ -24,6 +24,9 @@ ns.map_spellids = {
     -- [2420] = 0, -- Sidestreet Sluice - The Pits
     -- [2422] = 0, -- Sidestreet Sluice - The High Decks
     -- [2396] = 0, -- Excavation Site 9
+    -- [2452] = 0, -- Archival Assault
+    -- [2455] = 0, -- Archival Assault
+    -- [2476] = 0, -- Archival Assault	
 }
 
 ns.points = {
@@ -469,6 +472,44 @@ ns.points = {
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\pport.tga",
         }),
     },
+    [2455] = { -- Archival Assault -- Lower Chamber
+	    [49669258] = ({
+            label = L["Sturdy Chest 18"],
+            cont = true,
+            quest = 92573,				
+            Zamro = true,
+            note = L["Sturdy Chest 18 Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),	
+    },	
+    [2476] = { -- Archival Assault -- Crystal Chambers
+	    [43886472] = ({
+            label = L["Sturdy Chest 18"],
+            cont = true,
+            quest = 90839,				
+            Zamro = true,
+            note = L["Sturdy Chest 18 Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),	
+    },		
+    [2452] = { -- Archival Assault -- The Arcane Conservatory
+	    [61931087] = ({
+            label = L["Sturdy Chest 18"],
+            cont = true,
+            quest = 83673,				
+            Zamro = true,
+            note = L["Sturdy Chest 18 Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),	
+	    [62383800] = ({
+            label = L["Sturdy Chest 18"],
+            cont = true,
+            quest = 83692,				
+            Zamro = true,
+            note = L["Sturdy Chest 18 Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),			
+    },		
     [2396] = { -- Excavation Site 9
 	    [50906155] = ({
             label = L["Sturdy Chest"],
