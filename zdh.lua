@@ -77,7 +77,7 @@ local function GetKeyFlags()
             keysObtained = keysObtained + 1
         end
     end
-    local keyFlags = "Keys this week: " .. keysObtained .. "/4"
+    local keyFlags = "Keys this week: " .. keysObtained .. "/3"
     return keyFlags, keysObtained
 end
 
@@ -138,7 +138,8 @@ function DelvesBountifulList:LayoutText()
         ["Tak-Rethan Abyss"] = true,
         ["The Underkeep"] = true,
         ["Excavation Site 9"] = true,
-        ["Sidestreet Sluice"] = true,		
+        ["Sidestreet Sluice"] = true,
+        ["Archival Assault"] = true,		
     }
 
     for zoneName, zoneData in pairs(self.Zones) do
