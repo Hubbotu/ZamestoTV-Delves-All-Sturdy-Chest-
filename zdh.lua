@@ -77,7 +77,7 @@ local function GetKeyFlags()
             keysObtained = keysObtained + 1
         end
     end
-    local keyFlags = "Keys this week: " .. keysObtained .. "/3"
+    local keyFlags = "Keys this week: " .. keysObtained .. "/4"
     return keyFlags, keysObtained
 end
 

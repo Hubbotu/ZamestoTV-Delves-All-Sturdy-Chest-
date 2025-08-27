@@ -78,7 +78,7 @@ local function UpdateKeyCount()
     if C_QuestLog.IsQuestFlaggedCompleted(91176) then keys = keys + 1 end
     if C_QuestLog.IsQuestFlaggedCompleted(91177) then keys = keys + 1 end
     if C_QuestLog.IsQuestFlaggedCompleted(91178) then keys = keys + 1 end
-    frame.text:SetText(keys .. "/3")
+    frame.text:SetText(keys .. "/4")
 end
 
 local function PositionFrame()
