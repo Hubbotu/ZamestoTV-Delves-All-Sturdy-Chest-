@@ -103,9 +103,9 @@ local lootData = {
         [2] = {run = 658, vault = 671},
         [3] = {run = 662, vault = 675},
         [4] = {run = 665, vault = 678},
-        [5] = {run = 668, vault = 681},
+        [5] = {run = 668, vault = 684},
         [6] = {run = 671, vault = 688},
-        [7] = {run = 681, vault = 691},
+        [7] = {run = 681, vault = 694},
         [8] = {run = 684, vault = 694},
     },
 }
@@ -302,8 +302,14 @@ local function CreateDelveData()
         for j, key in ipairs({1, 2, 3, 4, 5, 6, 7, 8}) do
             local data = lootData.delve[key]
             local ilvl = data[label:lower()]
-            local track = tracks[ilvl]
-            local color = trackColors[track] or {1, 1, 1, 1}
+            local color
+            -- Override color for vault = 694 at delve tier 7 to use Champion color
+            if key == 7 and label:lower() == "vault" and ilvl == 694 then
+                color = {0.64, 0.21, 0.93, 1} -- Champion color
+            else
+                local track = tracks[ilvl]
+                color = trackColors[track] or {1, 1, 1, 1}
+            end
             local xOffset = j * 25
             CreateTextureFrame(
                 delveFrame, 25, 16, color, tostring(ilvl), 8, "CENTER",
