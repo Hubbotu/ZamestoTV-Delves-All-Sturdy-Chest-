@@ -5,18 +5,22 @@ VladDelves:RegisterEvent("PLAYER_REGEN_ENABLED")
 
 local G = {
     DelveButtons = {},
+    Container = nil,
+
     ExpansionMapID = 2274, -- Khaz Algar
     ExpansionExtraMapIDs = {
         2274, -- Khaz Algar
         2346, -- Undermine
-        2371, -- Undermine		
+        2371, -- K'aresh
     },
+
     config = {
         onlyBountiful = true,
         prioBountiful = false,
-        taintSafe = false
+        taintSafe = false,
     },
-    -- Mapping of bountiful areaPoiID to overchargedUiWidgetID from Config.lua
+
+    -- areaPoiID => overchargedUiWidgetID
     DelveConfig = {
         [7779] = 7105, -- Fungal Folly
         [7781] = 7041, -- Kriegval's Rest
@@ -24,16 +28,22 @@ local G = {
         [7789] = 7051, -- Skittering Breach
         [7790] = 7053, -- The Spiral Weave
         [8246] = 7104, -- Sidestreet Sluice
-    }
+    },
 }
 
+---------------------------------------------------------
+-- Collect delves
+---------------------------------------------------------
 function G.GetDelves()
     local dupe = {}
-    local temp = {}
-    local onlyBountiful = G.config.onlyBountiful
-    local areas = C_Map.GetMapChildrenInfo(G.ExpansionMapID, Enum.UIMapType.Zone, true)
-    
-    -- Add extra map IDs
+    local result = {}
+
+    local areas = C_Map.GetMapChildrenInfo(
+        G.ExpansionMapID,
+        Enum.UIMapType.Zone,
+        true
+    )
+
     for _, mapID in ipairs(G.ExpansionExtraMapIDs) do
         local area = C_Map.GetMapInfo(mapID)
         if area then
@@ -41,153 +51,214 @@ function G.GetDelves()
             table.insert(areas, area)
         end
     end
-    
+
     for _, area in ipairs(areas) do
         local mapID = area.mapID
         local areaPOIs = C_AreaPoiInfo.GetDelvesForMap(mapID)
+
         for _, areaPoiID in ipairs(areaPOIs) do
             local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(mapID, areaPoiID)
             if poiInfo and poiInfo.atlasName and (poiInfo.isPrimaryMapForPOI or area.isExtraMap) then
                 if not dupe[poiInfo.name] then
                     dupe[poiInfo.name] = true
-                    local bountiful = not not poiInfo.atlasName:find("bountiful")
-                    if bountiful then
-                        -- Check for Overcharged status
+
+                    local isBountiful = poiInfo.atlasName:find("bountiful") ~= nil
+                    if isBountiful then
                         local isOvercharged = false
-                        local overchargedUiWidgetID = G.DelveConfig[areaPoiID]
-                        if overchargedUiWidgetID then
-                            local visInfo = C_UIWidgetManager.GetSpacerVisualizationInfo(overchargedUiWidgetID)
-                            isOvercharged = visInfo and visInfo.shownState == 1
+                        local widgetID = G.DelveConfig[areaPoiID]
+
+                        if widgetID then
+                            local vis = C_UIWidgetManager.GetSpacerVisualizationInfo(widgetID)
+                            isOvercharged = vis and vis.shownState == 1
                         end
-                        temp[#temp + 1] = {
-                            bountiful = bountiful,
-                            isOvercharged = isOvercharged,
-                            atlas = poiInfo.atlasName,
+
+                        result[#result + 1] = {
                             name = poiInfo.name,
                             zone = area.name,
+                            atlas = poiInfo.atlasName,
                             mapID = mapID,
                             areaPoiID = areaPoiID,
+                            bountiful = true,
+                            isOvercharged = isOvercharged,
                         }
                     end
                 end
             end
         end
     end
-    table.sort(temp, function(a, b)
-        -- Prioritize Overcharged delves, then sort by zone and name
+
+    table.sort(result, function(a, b)
         if a.isOvercharged ~= b.isOvercharged then
             return a.isOvercharged
         end
-        return a.zone > b.zone or (a.zone == b.zone and a.name > b.name)
+        if a.zone ~= b.zone then
+            return a.zone > b.zone
+        end
+        return a.name > b.name
     end)
-    return temp
+
+    return result
 end
 
+---------------------------------------------------------
+-- Tooltip
+---------------------------------------------------------
 local function OnDelveEnter(self)
     local delve = self.delve
-    GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
-    GameTooltip:AddLine(format("|A:%s:0:0|a %s", delve.atlas, delve.name), 1, 1, 1, false)
-    GameTooltip:AddLine(format("%s", delve.zone), 1, 1, 1, false)
+    if not delve then return end
+
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:AddLine(
+        format("|A:%s:0:0|a %s", delve.atlas, delve.name),
+        1, 1, 1
+    )
+    GameTooltip:AddLine(delve.zone, 0.9, 0.9, 0.9)
+
     if delve.isOvercharged then
-        GameTooltip:AddLine("Overcharged Today", 1, 0.5, 0, false)
+        GameTooltip:AddLine("Overcharged Today", 1, 0.6, 0)
     else
-        GameTooltip:AddLine("Bountiful", 0, 1, 0, false)
+        GameTooltip:AddLine("Bountiful", 0, 1, 0)
     end
+
     GameTooltip:Show()
 end
 
+---------------------------------------------------------
+-- Click → world map
+---------------------------------------------------------
 local function OnDelveClick(self, button, down)
     if G.config.taintSafe then return end
+    if down then return end
+
     local delve = self.delve
+    if not delve then return end
+
     if not WorldMapFrame:IsShown() then
         WorldMapFrame:HandleUserActionOpenSelf()
     end
+
     WorldMapFrame:SetMapID(delve.mapID)
-    if down then return end
+
     for pin in WorldMapFrame:EnumeratePinsByTemplate("DelveEntrancePinTemplate") do
-        if delve.areaPoiID == pin.areaPoiID then
+        if pin.areaPoiID == delve.areaPoiID then
             pin:OnClick(button, down)
             break
         end
     end
 end
 
-function G.CreateDelveButton(frame, index)
-    local maxPerRow = 4
-    local rowIndex = (index - 1) % maxPerRow
-    local colIndex = math.floor((index - 1) / maxPerRow) % 2
-    local yOffset = -colIndex * 30
-    local xOffset = rowIndex * 30
-    
-    local button = CreateFrame("Button", nil, frame, "SecureActionButtonTemplate")
-    button:SetPoint("TOPLEFT", frame, "TOPLEFT", xOffset, yOffset - 64)
-    button:SetSize(24, 24)
-    button:SetAttribute("type", "spell")
-    button:SetAttribute("spell", "")
+---------------------------------------------------------
+-- Button factory
+---------------------------------------------------------
+function G.CreateDelveButton(parent, index)
+    local button = CreateFrame("Button", nil, parent, "SecureActionButtonTemplate")
+
+    local size = 26
+    local spacing = 4
+    local perRow = 6
+
+    local row = math.floor((index - 1) / perRow)
+    local col = (index - 1) % perRow
+
+    button:SetSize(size, size)
+    button:SetPoint(
+        "TOPRIGHT",
+        parent,
+        "TOPRIGHT",
+        -(col * (size + spacing)),
+        -(row * (size + spacing))
+    )
+
     button:RegisterForClicks("AnyUp", "AnyDown")
-    button.Icon = button:CreateTexture(nil, "OVERLAY")
+
+    button.Icon = button:CreateTexture(nil, "ARTWORK")
     button.Icon:SetAllPoints()
     button.Icon:SetAtlas("Dungeon")
-    -- Create border texture for Overcharged outline
-    button.Border = button:CreateTexture(nil, "BORDER")
-    button.Border:SetPoint("CENTER", button.Icon)
-    button.Border:SetSize(26, 26) -- 1px outline
+
+    button.Border = button:CreateTexture(nil, "OVERLAY")
+    button.Border:SetPoint("CENTER")
+    button.Border:SetSize(size + 4, size + 4)
     button.Border:SetTexture("Interface\\Buttons\\UI-Quickslot-Depress")
-    button.Border:SetVertexColor(0.4, 0.6, 1, 1) -- Brighter blue (R=0.4, G=0.6, B=1, A=1)
-    button.Border:Hide() -- Hidden by default
-    button:HookScript("OnLeave", GameTooltip_Hide)
-    button:HookScript("OnEnter", OnDelveEnter)
-    button:HookScript("OnClick", OnDelveClick)
+    button.Border:SetVertexColor(0.4, 0.6, 1, 1)
+    button.Border:Hide()
+
+    button:SetScript("OnEnter", OnDelveEnter)
+    button:SetScript("OnLeave", GameTooltip_Hide)
+    button:SetScript("OnClick", OnDelveClick)
+
     return button
 end
 
-function G.DelvesUpdate(self)
+---------------------------------------------------------
+-- Update display
+---------------------------------------------------------
+function G.Update()
     if InCombatLockdown() then return end
-    for _, button in pairs(G.DelveButtons) do
-        button:Hide()
+    if not G.Container then return end
+
+    for _, btn in ipairs(G.DelveButtons) do
+        btn:Hide()
     end
+
     local delves = G.GetDelves()
+
     for i, delve in ipairs(delves) do
         local button = G.DelveButtons[i]
         if not button then
-            button = G.CreateDelveButton(self, i)
+            button = G.CreateDelveButton(G.Container, i)
             G.DelveButtons[i] = button
         end
+
         button.delve = delve
         button.Icon:SetAtlas(delve.atlas)
-        -- Show blue border for Overcharged delves
+
         if delve.isOvercharged then
             button.Border:Show()
         else
             button.Border:Hide()
         end
+
         button:Show()
     end
 end
 
-function G.DelvesInit()
-    local panel = DelvesDashboardFrame.ButtonPanelLayoutFrame
-    local frame = CreateFrame("Frame", nil, panel, "DelvesDashboardButtonPanelFrame")
-    frame.layoutIndex = 3
-    frame:SetWidth(120)
-    frame.ButtonPanelBackground:Hide()
-    frame.PanelTitle:SetText("Bountiful & Overcharged")
-    frame.PanelDescription:SetText("")
-    panel:HookScript("OnShow", function(...) G.DelvesUpdate(frame, ...) panel:Layout() end)
+---------------------------------------------------------
+-- Init container
+---------------------------------------------------------
+function G.Init()
+    if G.Container then return end
+    if not EncounterJournalJourneysFrame then return end
+
+    local frame = CreateFrame("Frame", nil, EncounterJournalJourneysFrame)
+    frame:SetSize(200, 100)
+    frame:SetPoint("TOPRIGHT", EncounterJournalJourneysFrame, "TOPRIGHT", -26, -16)
+
+    G.Container = frame
+    _G.BountifulContainer = frame
+    EncounterJournalJourneysFrame:HookScript("OnShow", function()
+        G.Update()
+    end)
+
+    G.Update()
 end
 
+---------------------------------------------------------
+-- Loader
+---------------------------------------------------------
 function G.TryLoad()
     if InCombatLockdown() then return end
-    if DelvesDashboardFrame and not G.Delves then
-        G.Delves = true
-        G.DelvesInit()
+    if EncounterJournalJourneysFrame then
+        G.Init()
     end
 end
 
-VladDelves:SetScript("OnEvent", function(self, event, ...)
+---------------------------------------------------------
+-- Events
+---------------------------------------------------------
+VladDelves:SetScript("OnEvent", function(_, event)
     if event == "ADDON_LOADED" then
         G.TryLoad()
-    elseif event == "PLAYER_REGEN_DISABLED" or event == "PLAYER_REGEN_ENABLED" then
+    elseif event == "PLAYER_REGEN_ENABLED" then
         G.TryLoad()
     end
 end)
