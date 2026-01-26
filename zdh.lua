@@ -2,9 +2,10 @@
 
 -- Saved Variables
 ZDH_SavedVars = ZDH_SavedVars or {
-    mode = 1, -- 1 = Default, 2 = Minimalist, 3 = Anchor
+    mode = 1,               -- 1 = Default, 2 = Minimalist, 3 = Anchor
     autohide = false,
     isMinimized = false,
+    wasVisible = true,      -- NEW: remembers if user wanted the frame visible
     position = { x = 0, y = 0 },
 }
 
@@ -13,15 +14,13 @@ ZDH_GlobalScripting = {}
 
 -- Core Functionality
 
--- Check if weekly reward for delves is full (Level 8)
 function ZDH_GlobalScripting:IsWeeklyRewardForDelvesFull()
     local worldActivitiesRewards = C_WeeklyRewards.GetActivities(Enum.WeeklyRewardChestThresholdType.World)
     local bestReward = worldActivitiesRewards[3]
     return bestReward and bestReward.level == 8 or false
 end
 
--- Determine if UI should be shown based on mode and conditions
-function ZDH_GlobalScripting:GetShowValue(mode, ...)
+function ZDH_GlobalScripting:GetShowValue(mode, wantVisible, ...)
     local args = {...}
     local allTrue = true
 
@@ -38,9 +37,10 @@ function ZDH_GlobalScripting:GetShowValue(mode, ...)
 
     if ZDH_SavedVars.autohide then
         local done = ZDH_GlobalScripting:IsWeeklyRewardForDelvesFull()
-        return allTrue and not done
+        return allTrue and wantVisible and not done
     end
-    return allTrue
+    
+    return allTrue and wantVisible
 end
 
 -- Delve Progress Functions
@@ -77,11 +77,10 @@ local function GetKeyFlags()
             keysObtained = keysObtained + 1
         end
     end
-    local keyFlags = "Keys this week: " .. keysObtained .. "/4"
-    return keyFlags, keysObtained
+    return "Keys this week: " .. keysObtained .. "/4", keysObtained
 end
 
--- Delve List Management
+-- Delve List Management (unchanged)
 local DelvesBountifulList = {
     Zones = {
         ["Isle of Dorn"] = { uiMapID = 2248, delves = {{id = 7787, name = "Earthcrawl Mines"}, {id = 7781, name = "Kriegval's Rest"}, {id = 7779, name = "Fungal Folly"}} },
@@ -95,7 +94,7 @@ local DelvesBountifulList = {
 
 function DelvesBountifulList:GetMapAtZoneLevel3(uiMapID)
     local mapInfo = C_Map.GetMapInfo(uiMapID)
-    if mapInfo.mapType > 3 and mapInfo.parentMapID > 0 then
+    if mapInfo and mapInfo.mapType > 3 and mapInfo.parentMapID > 0 then
         return self:GetMapAtZoneLevel3(mapInfo.parentMapID)
     end
     return uiMapID
@@ -125,36 +124,23 @@ function DelvesBountifulList:LayoutText()
     local allDelves = self:GetBountifulDelves()
     local text = ""
     local blueDelves = {
-        ["Earthcrawl Mines"] = true,
-        ["Kriegval's Rest"] = true,
-        ["Fungal Folly"] = true,
-        ["Skittering Breach"] = true,
-        ["Nightfall Sanctum"] = true,
-        ["The Sinkhole"] = true,
-        ["Mycomancer Cavern"] = true,
-        ["The Waterworks"] = true,
-        ["The Dread Pit"] = true,
-        ["The Spiral Weave"] = true,
-        ["Tak-Rethan Abyss"] = true,
-        ["The Underkeep"] = true,
-        ["Excavation Site 9"] = true,
-        ["Sidestreet Sluice"] = true,
-        ["Archival Assault"] = true,		
+        ["Earthcrawl Mines"] = true, ["Kriegval's Rest"] = true, ["Fungal Folly"] = true,
+        ["Skittering Breach"] = true, ["Nightfall Sanctum"] = true, ["The Sinkhole"] = true,
+        ["Mycomancer Cavern"] = true, ["The Waterworks"] = true, ["The Dread Pit"] = true,
+        ["The Spiral Weave"] = true, ["Tak-Rethan Abyss"] = true, ["The Underkeep"] = true,
+        ["Excavation Site 9"] = true, ["Sidestreet Sluice"] = true, ["Archival Assault"] = true,
     }
 
     for zoneName, zoneData in pairs(self.Zones) do
         local zoneInfo = C_Map.GetMapInfo(zoneData.uiMapID)
-        if self:ZoneHasDelves(zoneData.delves, allDelves) then
+        if zoneInfo and self:ZoneHasDelves(zoneData.delves, allDelves) then
             if text ~= "" then text = text .. "\n" end
             text = text .. "|cffffd700" .. zoneInfo.name .. "|r\n"
             for _, delve in ipairs(zoneData.delves) do
                 for _, otherDelve in ipairs(allDelves) do
                     if delve.id == otherDelve.areaPoiID then
-                        if blueDelves[otherDelve.name] then
-                            text = text .. "|cADD8E6FF" .. otherDelve.name .. "|r\n"
-                        else
-                            text = text .. otherDelve.name .. "\n"
-                        end
+                        local color = blueDelves[otherDelve.name] and "|cADD8E6FF" or ""
+                        text = text .. color .. otherDelve.name .. "|r\n"
                     end
                 end
             end
@@ -188,7 +174,7 @@ ZDH:SetScript("OnDragStop", function(self)
     ZDH_SavedVars.position.x = x - GetScreenWidth() / 2
     ZDH_SavedVars.position.y = y - GetScreenHeight() / 2
 end)
-ZDH:Hide() -- Frame is hidden by default
+ZDH:Hide() -- Start hidden - we decide later
 
 -- Background and Border
 ZDH.bg = ZDH:CreateTexture(nil, "BACKGROUND")
@@ -215,7 +201,7 @@ ZDH.toggleButton:SetScript("OnClick", function()
     ZDH:UpdateUI()
 end)
 
--- Delve Progress Texts
+-- Text elements (unchanged layout)
 ZDH.progressText = ZDH:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 ZDH.progressText:SetPoint("TOPLEFT", ZDH, "TOPLEFT", 10, -40)
 ZDH.progressText:SetJustifyH("LEFT")
@@ -229,7 +215,6 @@ ZDH.rewardText2:SetPoint("TOPLEFT", ZDH.rewardText1, "BOTTOMLEFT", 0, -5)
 ZDH.rewardText3 = ZDH:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 ZDH.rewardText3:SetPoint("TOPLEFT", ZDH.rewardText2, "BOTTOMLEFT", 0, -5)
 
--- Delve Info Texts
 ZDH.delveList = ZDH:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 ZDH.delveList:SetPoint("TOPLEFT", ZDH.rewardText3, "BOTTOMLEFT", 0, -15)
 ZDH.delveList:SetJustifyH("LEFT")
@@ -244,10 +229,16 @@ ZDH.keysGainedText:SetPoint("TOPLEFT", ZDH.keysText, "BOTTOMLEFT", 0, -5)
 ZDH.timerText = ZDH:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 ZDH.timerText:SetPoint("TOPLEFT", ZDH.keysGainedText, "BOTTOMLEFT", 0, -5)
 
--- Update UI Function
-function ZDH:UpdateUI()
+-- Update UI – now takes into account persisted visibility intent
+function ZDH:UpdateUI(forceShow)
     local mode = ZDH_SavedVars.mode
-    local show = ZDH_GlobalScripting:GetShowValue(mode, not ZDH_SavedVars.isMinimized)
+    local shouldBeVisible = forceShow or ZDH_SavedVars.wasVisible
+    
+    local show = ZDH_GlobalScripting:GetShowValue(
+        mode,
+        shouldBeVisible,
+        not ZDH_SavedVars.isMinimized
+    )
 
     if not show then
         ZDH:Hide()
@@ -255,43 +246,39 @@ function ZDH:UpdateUI()
     end
 
     ZDH:Show()
-    ZDH.toggleButton:SetNormalTexture(ZDH_SavedVars.isMinimized and "Interface\\Buttons\\UI-PlusButton-Up" or "Interface\\Buttons\\UI-MinusButton-Up")
+    ZDH.toggleButton:SetNormalTexture(
+        ZDH_SavedVars.isMinimized and "Interface\\Buttons\\UI-PlusButton-Up" 
+                                 or "Interface\\Buttons\\UI-MinusButton-Up"
+    )
 
-    if mode == 1 then -- Default Mode
+    if mode == 1 then
         ZDH.progressText:SetText("Level 8+: " .. GetLevel8DelvesDoneCount())
         ZDH.rewardText1:SetText("Reward 1: " .. GetDelveRewardLevel(1))
         ZDH.rewardText2:SetText("Reward 2: " .. GetDelveRewardLevel(2))
         ZDH.rewardText3:SetText("Reward 3: " .. GetDelveRewardLevel(3))
-        ZDH.delveList:SetText(DelvesBountifulList:LayoutText())
-        ZDH.keysText:SetText(GetKeyNumber())
-        ZDH.keysGainedText:SetText(GetKeyFlags())
-    elseif mode == 2 then -- Minimalist Mode
+    elseif mode == 2 then
         ZDH.progressText:SetText("8+: " .. GetLevel8DelvesDoneCount())
         ZDH.rewardText1:SetText(GetDelveRewardLevel(1))
         ZDH.rewardText2:SetText("/ " .. GetDelveRewardLevel(2))
         ZDH.rewardText3:SetText("/ " .. GetDelveRewardLevel(3))
-        ZDH.delveList:SetText(DelvesBountifulList:LayoutText())
-        ZDH.keysText:SetText(GetKeyNumber())
-        ZDH.keysGainedText:SetText(GetKeyFlags())
-    elseif mode == 3 then -- Anchor Mode
+    elseif mode == 3 then
         if _G["DelvesDashboardFrame"] and _G["DelvesDashboardFrame"]:IsShown() then
             ZDH:SetParent(DelvesDashboardFrame)
             ZDH:ClearAllPoints()
             ZDH:SetPoint("RIGHT", DelvesDashboardFrame, "RIGHT", 10, -25)
-            ZDH.progressText:SetText("8+: " .. GetLevel8DelvesDoneCount())
-            ZDH.rewardText1:SetText(GetDelveRewardLevel(1))
-            ZDH.rewardText2:SetText("/ " .. GetDelveRewardLevel(2))
-            ZDH.rewardText3:SetText("/ " .. GetDelveRewardLevel(3))
-            ZDH.delveList:SetText(DelvesBountifulList:LayoutText())
-            ZDH.keysText:SetText(GetKeyNumber())
-            ZDH.keysGainedText:SetText(GetKeyFlags())
         else
             ZDH:Hide()
+            return
         end
     end
+
+    -- Common elements
+    ZDH.delveList:SetText(DelvesBountifulList:LayoutText())
+    ZDH.keysText:SetText(GetKeyNumber())
+    ZDH.keysGainedText:SetText(GetKeyFlags())
 end
 
--- Real-Time Timer Update
+-- Real-Time Timer
 ZDH:SetScript("OnUpdate", function(self, elapsed)
     if self:IsShown() then
         local timer = DelvesBountifulList:GetActiveDelveTimer()
@@ -299,30 +286,57 @@ ZDH:SetScript("OnUpdate", function(self, elapsed)
     end
 end)
 
--- Event Handling
+-- Restore state on load
 ZDH:RegisterEvent("PLAYER_ENTERING_WORLD")
-ZDH:RegisterEvent("WEEKLY_REWARDS_UPDATE")
-ZDH:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
-ZDH:RegisterEvent("DAILY_RESET_INSTANCE_WELCOME")
-ZDH:RegisterEvent("ZONE_CHANGED")
-ZDH:RegisterEvent("VIGNETTES_UPDATED")
-
 ZDH:SetScript("OnEvent", function(self, event, ...)
-    if self:IsShown() then -- Only update if the frame is visible
+    if event == "PLAYER_ENTERING_WORLD" then
+        -- Initial restore attempt
+        C_Timer.After(0.5, function()  -- small delay helps with UI loading order
+            self:UpdateUI()
+        end)
+    elseif self:IsShown() then
         self:UpdateUI()
     end
 end)
 
--- Slash Command to Show/Hide Frame
+-- Improved Slash Command – now also manages wasVisible
 SLASH_ZDH1 = "/zdh"
-SlashCmdList["ZDH"] = function()
+SlashCmdList["ZDH"] = function(msg)
+    msg = (msg or ""):trim():lower()
+
+    if msg == "hide" then
+        ZDH_SavedVars.wasVisible = false
+        ZDH:Hide()
+        return
+    elseif msg == "show" then
+        ZDH_SavedVars.wasVisible = true
+        ZDH_SavedVars.isMinimized = false
+        ZDH:UpdateUI(true)
+        return
+    elseif msg == "reset" then
+        ZDH_SavedVars.isMinimized = false
+        ZDH_SavedVars.wasVisible = true
+        ZDH_SavedVars.position = { x = 0, y = 0 }
+        ZDH:ClearAllPoints()
+        ZDH:SetPoint("CENTER")
+        ZDH:UpdateUI(true)
+        print("|cFF00FF00Delves Helper Tracker|r reset to center.")
+        return
+    end
+
+    -- Default toggle
     if ZDH:IsShown() then
+        ZDH_SavedVars.wasVisible = false
         ZDH:Hide()
     else
-        ZDH:Show()
-        ZDH:UpdateUI()
+        ZDH_SavedVars.wasVisible = true
+        ZDH_SavedVars.isMinimized = false
+        ZDH:UpdateUI(true)
+        if not ZDH:IsShown() then
+            print("|cFF00FF00Delves Helper Tracker|r is hidden due to weekly complete + autohide. Use /zdh show to override.")
+        end
     end
 end
 
--- Initial Setup (Frame remains hidden, no initial update)
-print("|cFF00FF00Delves Helper Tracker|r loaded. Use /zdh to show/hide the frame.")
+-- Initial load message
+print("|cFF00FF00Delves Helper Tracker|r loaded. Use /zdh to toggle • /zdh show • /zdh hide • /zdh reset")
