@@ -27,6 +27,18 @@ ns.map_spellids = {
     -- [2452] = 0, -- Archival Assault
     -- [2455] = 0, -- Archival Assault
     -- [2476] = 0, -- Archival Assault	
+	-- [2535] = 0, -- Atal'aman
+    -- [2502] = 0, -- The Shadow Enclave
+    -- [2545] = 0, -- Parhelion Plaza
+    -- [2547] = 0, -- Collegiate Calamity
+    -- [2525] = 0, -- The Darkway
+    -- [2504] = 0, -- Twilight Crypts
+    -- [2510] = 0, -- The Grudge Pit
+    -- [2505] = 0, -- The Gulf of Memory - (Upper Rootway)
+    -- [2575] = 0, -- The Gulf of Memory - (Lower Rootway)
+    -- [2528] = 0, -- Sunkiller Sanctum (Upper)- or 2540
+    -- [2571] = 0, -- Sunkiller Sanctum (Lower)
+    -- [2506] = 0, -- Shadowguard Point
 }
 
 ns.points = {
@@ -585,5 +597,269 @@ ns.points = {
             note = L["Sturdy Chest 14 Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
         }),	
-    },			
+    },
+    [2535] = { -- Atal'aman
+        [48345051] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94014,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [53065795] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94000,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [53006534] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94038,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+    },
+    [2502] = { -- The Shadow Enclave
+        [54598488] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94001,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [54634885] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94002,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [55903437] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94028,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+    },
+    [2545] = { -- Parhelion Plaza
+        [09635031] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94019,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [41168679] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94033,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [22446108] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94015,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+    },
+    [2547] = { -- Collegiate Calamity
+        [30951246] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94018,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [29545397] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94030,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [81283209] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94029,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+    },
+    [2525] = { -- The Darkway
+        [53104305] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94026,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [45814550] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94045,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [41584824] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94027,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+    },
+    [2504] = { -- Twilight Crypts
+        [56828579] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94020,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [21743629] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94034,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [46934989] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94037,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+    },
+    [2510] = { -- The Grudge Pit
+        [69763165] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94022,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [36972865] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94039,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [67535956] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94021,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+    },
+    [2505] = { -- The Gulf of Memory (Upper Rootway)
+        [54232518] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94023,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+    },
+    [2575] = { -- The Gulf of Memory (Lower Rootway)
+        [52598146] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94016,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [34494620] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94041,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+    },
+    [2528] = { -- Sunkiller Sanctum (Upper)
+        [38144902] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94042,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+    },
+    [2571] = { -- Sunkiller Sanctum (Lower)
+        [49755052] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94043,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [60114079] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94024,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+    },
+    [2506] = { -- Shadowguard Point
+        [58636052] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94044,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [41805375] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94017,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [58264151] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 94025,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+    },
 }
