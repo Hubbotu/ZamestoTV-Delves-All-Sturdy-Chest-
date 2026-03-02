@@ -789,9 +789,7 @@ ns.points = {
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
         }),
-    },
-    [2575] = { -- The Gulf of Memory (Lower Rootway)
-        [52598146] = ({
+		[39912662] = ({
             label = L["Sturdy Chest"],
             cont = true,
             quest = 94016,
@@ -799,12 +797,12 @@ ns.points = {
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
         }),
-        [34494620] = ({
-            label = L["Sturdy Chest"],
+		[55402603] = ({
+            label = L["Sturdy Chest 19"],
             cont = true,
             quest = 94041,
             Zamro = true,
-            note = L["Sturdy Chest Note"],
+            note = L["Sturdy Chest 19 Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
         }),
     },

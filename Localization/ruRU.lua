@@ -42,6 +42,8 @@ L["Sturdy Chest 17"] = "|cFFFFFFFFПрыжок|r"
 L["Sturdy Chest 17 Note"] = "Перейти отсюда."
 L["Sturdy Chest 18"] = "|cFFFFFFFFПрочный сундук|r"
 L["Sturdy Chest 18 Note"] = "Использовать |cFF1EFF00Фазовый резак|r."
+L["Sturdy Chest 19"] = "|cFFFFFFFFПрочный сундук|r"
+L["Sturdy Chest 19 Note"] = "Залезть на корни и следовать по узкой тропе."
 
 -- Waypoints
 L["Create waypoint"] = "Создать путевую точку"

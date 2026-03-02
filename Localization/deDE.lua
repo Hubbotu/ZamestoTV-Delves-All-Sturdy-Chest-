@@ -43,6 +43,8 @@ L["Sturdy Chest 17"] = "|cFFFFFFFFSpringen|r"
 L["Sturdy Chest 17 Note"] = "Von hier springen."
 L["Sturdy Chest 18"] = "|cFFFFFFFFStabile Truhe|r"
 L["Sturdy Chest 18 Note"] = "Verwenden |cFF1EFF00Phasenschneider|r."
+L["Sturdy Chest 19"] = "|cFFFFFFFFSpringen|r"
+L["Sturdy Chest 19 Note"] = "Klettere auf die Wurzeln und folge dem schmalen Pfad."
 
 -- Wegpunkte
 L["Create waypoint"] = "Wegpunkt erstellen"

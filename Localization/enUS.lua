@@ -42,6 +42,8 @@ L["Sturdy Chest 17"] = "|cFFFFFFFFJump|r"
 L["Sturdy Chest 17 Note"] = "Jump from here."
 L["Sturdy Chest 18"] = "|cFFFFFFFFSturdy Chest|r"
 L["Sturdy Chest 18 Note"] = "Use |cFF1EFF00Phase Cutter|r."
+L["Sturdy Chest 19"] = "|cFFFFFFFFSturdy Chest|r"
+L["Sturdy Chest 19 Note"] = "Climb the roots and follow the narrow path."
 
 -- Waypoints
 L["Create waypoint"] = true
