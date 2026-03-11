@@ -24,99 +24,91 @@ end
 
 local lootData = {
     raid = {
-        bosses = {-1, 1, 2, 3, 4, 5, 6, 7, 8},
+        bosses = {-1, 1, 2, 3, 4, 5, 6},
         headers = {"LFR", "Normal", "Heroic", "Mythic"},
         LFR = {
             index = 0,
             bosses = {
-            [1] = 671,
-            [2] = 671,
-            [3] = 671,
-            [4] = 675,
-            [5] = 675,
-            [6] = 675,
-            [7] = 678,
-            [8] = 678,
+            [1] = 233,
+            [2] = 237,
+            [3] = 240,
+            [4] = 243,
+            [5] = 246,
+            [6] = 250,
             },
-            rare = 675,
+            rare = 243,
         },
         Normal = {
             index = 10,
             bosses = {
-            [1] = 684,
-            [2] = 684,
-            [3] = 684,
-            [4] = 688,
-            [5] = 688,
-            [6] = 688,
-            [7] = 691,
-            [8] = 691,
+            [1] = 246,
+            [2] = 250,
+            [3] = 253,
+            [4] = 256,
+            [5] = 259,
+            [6] = 263,
             },
-            ["Very Rare"] = 688,
+            ["Very Rare"] = 256,
         },
         Heroic = {
             index = 20,
             bosses = {
-            [1] = 697,
-            [2] = 697,
-            [3] = 697,
-            [4] = 701,
-            [5] = 701,
-            [6] = 701,
-            [7] = 704,
-            [8] = 704,
+            [1] = 259,
+            [2] = 263,
+            [3] = 266,
+            [4] = 269,
+            [5] = 272,
+            [6] = 276,
             },        
-            rare = 701,
+            rare = 269,
         },
         Mythic = {
             index = 30,
             bosses = {
-            [1] = 710,
-            [2] = 710,
-            [3] = 710,
-            [4] = 714,
-            [5] = 714,
-            [6] = 714,
-            [7] = 717,
-            [8] = 717,
+            [1] = 272,
+            [2] = 276,
+            [3] = 279,
+            [4] = 282,
+            [5] = 285,
+            [6] = 289,
             },        
-            rare = 714,
+            rare = 282,
         },
     },
     mythicPlus = {
         types = {"Run", "Vault"},
         headers = {-1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
-    [2] = {run = 684, vault = 694},
-    [3] = {run = 684, vault = 694},
-    [4] = {run = 688, vault = 697},
-    [5] = {run = 691, vault = 697},
-    [6] = {run = 694, vault = 701},
-    [7] = {run = 694, vault = 704},
-    [8] = {run = 697, vault = 704},
-    [9] = {run = 697, vault = 704},
-    [10] = {run = 701, vault = 707},
+    [2] = {run = 250, vault = 259},
+    [3] = {run = 250, vault = 259},
+    [4] = {run = 253, vault = 263},
+    [5] = {run = 256, vault = 263},
+    [6] = {run = 256, vault = 266},
+    [7] = {run = 259, vault = 269},
+    [8] = {run = 263, vault = 269},
+    [9] = {run = 263, vault = 269},
+    [10] = {run = 266, vault = 272},
     },
     delve = {
         types = {"Run", "Vault"},
         headers = {-1, 1, 2, 3, 4, 5, 6, 7, 8},
-        [1] = {run = 655, vault = 668},
-        [2] = {run = 658, vault = 671},
-        [3] = {run = 662, vault = 675},
-        [4] = {run = 665, vault = 678},
-        [5] = {run = 668, vault = 684},
-        [6] = {run = 671, vault = 688},
-        [7] = {run = 681, vault = 694},
-        [8] = {run = 684, vault = 694},
+        [1] = {run = 220, vault = 233},
+        [2] = {run = 224, vault = 237},
+        [3] = {run = 227, vault = 240},
+        [4] = {run = 230, vault = 243},
+        [5] = {run = 233, vault = 246},
+        [6] = {run = 237, vault = 253},
+        [7] = {run = 250, vault = 256},
+        [8] = {run = 250, vault = 259},
     },
 }
 
 local tracks = {
-    [642] = "Explorer", [646] = "Explorer", [649] = "Explorer", [652] = "Explorer",
-    [655] = "Adventurer", [658] = "Adventurer", [662] = "Adventurer", [665] = "Adventurer",
-    [668] = "Veteran", [671] = "Veteran", [675] = "Veteran", [678] = "Veteran",
-    [681] = "Champion", [684] = "Champion", [688] = "Champion", [691] = "Champion",
-    [694] = "Hero", [697] = "Hero", [701] = "Hero", [704] = "Hero",
-    [707] = "Myth", [710] = "Myth", [714] = "Myth", [717] = "Myth", [720] = "Myth", [723] = "Myth",
+    [208] = "Explorer", [211] = "Explorer", [214] = "Explorer", [217] = "Explorer",
+    [220] = "Adventurer", [224] = "Adventurer", [227] = "Adventurer", [230] = "Adventurer",
+    [233] = "Veteran", [237] = "Veteran", [240] = "Veteran", [243] = "Veteran",
+    [246] = "Champion", [250] = "Champion", [253] = "Champion", [256] = "Champion",
+    [259] = "Hero", [263] = "Hero", [266] = "Hero", [269] = "Hero",
+    [272] = "Myth", [276] = "Myth", [279] = "Myth", [282] = "Myth", [285] = "Myth", [289] = "Myth",
 }
 
 local trackColors = {
@@ -178,12 +170,12 @@ local function CreateTracks()
     
     local trackOrder = {"Explorer", "Adventurer", "Veteran", "Champion", "Hero", "Myth"}
     local ilvlRanges = {
-        Explorer = "642 - 652",
-        Adventurer = "655 - 665",
-        Veteran = "668 - 678",
-        Champion = "681 - 691",
-        Hero = "694 - 704",
-        Myth = "707 - 723",
+        Explorer = "208 - 217",
+        Adventurer = "220 - 230",
+        Veteran = "233 - 243",
+        Champion = "246 - 256",
+        Hero = "259 - 269",
+        Myth = "272 - 289",
     }
     
     for i, track in ipairs(trackOrder) do
@@ -218,9 +210,12 @@ local function CreateRaidData()
         )
     end
     
-    for i = 2, 9 do
+    -- ИСХОДНЫЙ ЦИКЛ БЫЛ: for i = 2, 9 do
+    -- НОВЫЙ ЦИКЛ: перебираем таблицу bosses, начиная со второго элемента
+    for i = 2, #lootData.raid.bosses do 
         local key = lootData.raid.bosses[i]
         local yOffset = -16 * (i - 1)
+        
         CreateTextureFrame(
             raidFrame, 30, 16, {0, 0, 0, 1}, tostring(key), 8, "CENTER",
             raidFrame, "TOPLEFT", "TOPLEFT", 0, yOffset
@@ -228,13 +223,16 @@ local function CreateRaidData()
         
         for j, header in ipairs(lootData.raid.headers) do
             local ilvl = lootData.raid[header].bosses[key]
-            local track = tracks[ilvl]
-            local color = trackColors[track] or {1, 1, 1, 1}
-            local xOffset = j * 30
-            CreateTextureFrame(
-                raidFrame, 30, 16, color, tostring(ilvl), 8, "CENTER",
-                raidFrame, "TOPLEFT", "TOPLEFT", xOffset, yOffset
-            )
+            -- Проверка на существование ilvl, чтобы не вылетала ошибка, если данных нет
+            if ilvl then
+                local track = tracks[ilvl]
+                local color = trackColors[track] or {1, 1, 1, 1}
+                local xOffset = j * 30
+                CreateTextureFrame(
+                    raidFrame, 30, 16, color, tostring(ilvl), 8, "CENTER",
+                    raidFrame, "TOPLEFT", "TOPLEFT", xOffset, yOffset
+                )
+            end
         end
     end
 end
