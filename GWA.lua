@@ -201,7 +201,6 @@ local function CreateRaidData()
     raidFrame:SetPoint("TOPLEFT", WeeklyRewardsFrame, "TOPLEFT", 150 * 0.8, -80 * 0.8)
     raidFrame:SetSize(150 * 0.8, 30 * 0.8)
     raidFrame:Show()
-    
     for i, header in ipairs(lootData.raid.headers) do
         local xOffset = i * 30
         CreateTextureFrame(
@@ -209,15 +208,14 @@ local function CreateRaidData()
             raidFrame, "TOPLEFT", "TOPLEFT", xOffset, 0
         )
     end
+    local rowCounter = 1
     for i = 2, #lootData.raid.bosses do 
         local key = lootData.raid.bosses[i]
-        local yOffset = -16 * (i - 1)
-        
+        local yOffset = -16 * rowCounter
         CreateTextureFrame(
             raidFrame, 30, 16, {0, 0, 0, 1}, tostring(key), 8, "CENTER",
             raidFrame, "TOPLEFT", "TOPLEFT", 0, yOffset
         )
-        
         for j, header in ipairs(lootData.raid.headers) do
             local ilvl = lootData.raid[header].bosses[key]
             if ilvl then
@@ -230,6 +228,7 @@ local function CreateRaidData()
                 )
             end
         end
+        rowCounter = rowCounter + 1
     end
 end
 
