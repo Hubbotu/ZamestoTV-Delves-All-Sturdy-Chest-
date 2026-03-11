@@ -209,9 +209,6 @@ local function CreateRaidData()
             raidFrame, "TOPLEFT", "TOPLEFT", xOffset, 0
         )
     end
-    
-    -- ИСХОДНЫЙ ЦИКЛ БЫЛ: for i = 2, 9 do
-    -- НОВЫЙ ЦИКЛ: перебираем таблицу bosses, начиная со второго элемента
     for i = 2, #lootData.raid.bosses do 
         local key = lootData.raid.bosses[i]
         local yOffset = -16 * (i - 1)
@@ -223,7 +220,6 @@ local function CreateRaidData()
         
         for j, header in ipairs(lootData.raid.headers) do
             local ilvl = lootData.raid[header].bosses[key]
-            -- Проверка на существование ilvl, чтобы не вылетала ошибка, если данных нет
             if ilvl then
                 local track = tracks[ilvl]
                 local color = trackColors[track] or {1, 1, 1, 1}
