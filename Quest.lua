@@ -1,21 +1,20 @@
--- Create a frame to handle events
-local frame = CreateFrame("Frame")
-frame:RegisterEvent("PLAYER_LOGIN")
-frame:RegisterEvent("ZONE_CHANGED")
-frame:RegisterEvent("QUEST_LOG_UPDATE")
+-- Event frame
+local eventFrame = CreateFrame("Frame")
+eventFrame:RegisterEvent("PLAYER_LOGIN")
+eventFrame:RegisterEvent("ZONE_CHANGED")
+eventFrame:RegisterEvent("QUEST_LOG_UPDATE")
 
--- Create the quest status display frame
+-- Main UI frame
 local questFrame = CreateFrame("Frame", "DelversQuestTrackerFrame", UIParent, "DialogBoxFrame")
-questFrame:SetSize(400, 300)
+questFrame:SetSize(420, 320)
 questFrame:SetPoint("CENTER")
 questFrame:SetMovable(true)
 questFrame:EnableMouse(true)
 questFrame:RegisterForDrag("LeftButton")
 questFrame:SetScript("OnDragStart", questFrame.StartMoving)
 questFrame:SetScript("OnDragStop", questFrame.StopMovingOrSizing)
-questFrame:Hide() -- Hide the frame by default
+questFrame:Hide()
 
--- Set textures for the frame
 questFrame:SetBackdrop({
     bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
     edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
@@ -25,94 +24,186 @@ questFrame:SetBackdrop({
     insets = { left = 11, right = 12, top = 12, bottom = 11 }
 })
 
--- Create a scrollable text area for quest status
-local scrollFrame = CreateFrame("ScrollFrame", nil, questFrame, "UIPanelScrollFrameTemplate")
-scrollFrame:SetPoint("TOPLEFT", 10, -30)
-scrollFrame:SetPoint("BOTTOMRIGHT", -30, 10)
+-- Tab system
+local tabs = {}
+local currentTab = nil
 
-local scrollChild = CreateFrame("Frame")
-scrollFrame:SetScrollChild(scrollChild)
-scrollChild:SetSize(380, 280)
+-- Function to create a tab
+local function CreateTab(name, index)
+    local tab = CreateFrame("Button", nil, questFrame, "UIPanelButtonTemplate")
+    tab:SetSize(120, 28)
+    tab:SetPoint("TOPRIGHT", questFrame, "TOPLEFT", -8, -35 - (index - 1) * 30)
+    
+    tab:SetText(name)
+    tab:GetFontString():SetTextColor(0.7, 0.7, 0.7)  -- inactive by default
+    
+    tab:SetScript("OnClick", function(self)
+        if currentTab == self then return end
+        
+        if currentTab then
+            currentTab.content:Hide()
+            currentTab:GetFontString():SetTextColor(0.7, 0.7, 0.7)
+        end
+        
+        self.content:Show()
+        self:GetFontString():SetTextColor(1.0, 1.0, 1.0)
+        currentTab = self
+        
+        -- Update content when switching
+        if UpdateVisibleTab then
+            UpdateVisibleTab()
+        end
+    end)
+    
+    -- Content (scroll + text)
+    local scroll = CreateFrame("ScrollFrame", nil, questFrame, "UIPanelScrollFrameTemplate")
+    scroll:SetPoint("TOPLEFT", questFrame, "TOPLEFT", 14, -32)
+    scroll:SetPoint("BOTTOMRIGHT", questFrame, "BOTTOMRIGHT", -28, 14)
+    
+    local child = CreateFrame("Frame", nil, scroll)
+    scroll:SetScrollChild(child)
+    child:SetSize(360, 300)
+    
+    local text = child:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    text:SetPoint("TOPLEFT", 0, 0)
+    text:SetJustifyH("LEFT")
+    text:SetJustifyV("TOP")
+    text:SetSpacing(2)
+    text:SetWidth(360)
+    
+    tab.content = scroll
+    tab.text = text
+    
+    tabs[name] = tab
+    return tab
+end
 
-local questStatusText = scrollChild:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-questStatusText:SetPoint("TOPLEFT")
-questStatusText:SetSize(380, 280)
-questStatusText:SetJustifyH("LEFT")
-questStatusText:SetJustifyV("TOP")
+-- Data: The War Within
+local warWithinData = {
+    ["Isle of Dorn"] = {
+        {id = 85648, name = "Delver's Call: Earthcrawl Mines"},
+        {id = 83759, name = "Delver's Call: Kriegval's Rest"},
+        {id = 83758, name = "Delver's Call: Fungal Folly"},
+    },
+    ["Hallowfall"] = {
+        {id = 83768, name = "Delver's Call: The Skittering Breach"},
+        {id = 85664, name = "Delver's Call: Nightfall Sanctum"},
+        {id = 83767, name = "Delver's Call: The Sinkhole"},
+        {id = 83769, name = "Delver's Call: Mycomancer Cavern"},
+    },
+    ["The Ringing Deeps"] = {
+        {id = 85649, name = "Delver's Call: The Waterworks"},
+        {id = 83766, name = "Delver's Call: The Dread Pit"},
+    },
+    ["Azj-Kahet"] = {
+        {id = 83770, name = "Delver's Call: The Spiral Weave"},
+        {id = 83771, name = "Delver's Call: Tak'Rethan Abyss"},
+        {id = 85667, name = "Delver's Call: The Underkeep"},
+    }
+}
 
--- Function to check if the player is in a raid or dungeon
+-- Data: Midnight
+local midnightData = {
+    ["Eversong Woods / Silvermoon City"] = {
+        {id = 93372, name = "Delver's Call: Shadow Enclave"},
+        {id = 93384, name = "Delver's Call: Collegiate Calamity"},
+        {id = 93385, name = "Delver's Call: The Darkway"},
+        {id = 93386, name = "Delver's Call: Parhelion Plaza"},
+    },
+    ["Harandar"] = {
+        {id = 93416, name = "Delver's Call: The Gulf of Memory"},
+        {id = 93421, name = "Delver's Call: The Grudge Pit"},
+    },
+    ["Zul'Aman"] = {
+        {id = 93409, name = "Delver's Call: Atal'Aman"},
+        {id = 93410, name = "Delver's Call: Twilight Crypts"},
+    },
+    ["Voidstorm"] = {
+        {id = 93428, name = "Delver's Call: Shadowguard Point"},
+        {id = 93427, name = "Delver's Call: Sunkiller Sanctum"},
+    }
+}
+
+-- Generate formatted text
+local function GenerateStatusText(dataTable)
+    local output = ""
+    for zone, quests in pairs(dataTable) do
+        output = output .. "|cffffcc00" .. zone .. "|r\n"
+        for _, quest in ipairs(quests) do
+            if C_QuestLog.IsQuestFlaggedCompleted(quest.id) then
+                output = output .. "  • " .. quest.name .. ": |cff00ff00Completed|r\n"
+            else
+                output = output .. "  • " .. quest.name .. ": |cffff0000Not Completed|r\n"
+            end
+        end
+        output = output .. "\n"
+    end
+    return output or "No data"
+end
+
+-- Check if in raid/dungeon
 local function IsInRaidOrDungeon()
     local _, instanceType = IsInInstance()
     return instanceType == "raid" or instanceType == "dungeon"
 end
 
--- Function to generate quest status text
-local function GenerateQuestStatusText()
-    -- List of quest IDs and names grouped by zone
-    local zones = {
-        ["Isle of Dorn"] = {
-            {id = 85648, name = "Delver's Call: Earthcrawl Mines"},
-            {id = 83759, name = "Delver's Call: Kriegval's Rest"},
-            {id = 83758, name = "Delver's Call: Fungal Folly"},
-        },
-        ["Hallowfall"] = {
-            {id = 83768, name = "Delver's Call: The Skittering Breach"},
-            {id = 85664, name = "Delver's Call: Nightfall Sanctum"},
-            {id = 83767, name = "Delver's Call: The Sinkhole"},
-            {id = 83769, name = "Delver's Call: Mycomancer Cavern"},
-        },
-        ["The Ringing Deeps"] = {
-            {id = 85649, name = "Delver's Call: The Waterworks"},
-            {id = 83766, name = "Delver's Call: The Dread Pit"},
-        },
-        ["Azj-Kahet"] = {
-            {id = 83770, name = "Delver's Call: The Spiral Weave"},
-            {id = 83771, name = "Delver's Call: Tak'Rethan Abyss"},
-            {id = 85667, name = "Delver's Call: The Underkeep"},
-        }
-    }
+-- Main update function
+function UpdateVisibleTab()
+    if not currentTab or not currentTab.text then return end
+    
+    if IsInRaidOrDungeon() then
+        currentTab.text:SetText("|cffff8800Tracking disabled in instances|r")
+    else
+        local data = (currentTab:GetText() == "The War Within") and warWithinData or midnightData
+        currentTab.text:SetText(GenerateStatusText(data))
+    end
+    
+    currentTab.content:UpdateScrollChildRect()
+end
 
-    local questStatusText = ""
+-- Create tabs
+local tabWarWithin = CreateTab("The War Within", 1)
+local tabMidnight   = CreateTab("Midnight", 2)
 
-    -- Check if each quest is completed and build a multi-line string
-    for zone, quests in pairs(zones) do
-        questStatusText = questStatusText .. "|cffffcc00" .. zone .. "|r:\n" -- Yellow for zone names
-        for _, quest in ipairs(quests) do
-            if C_QuestLog.IsQuestFlaggedCompleted(quest.id) then
-                questStatusText = questStatusText .. "• " .. quest.name .. ": |cff00ff00Completed|r\n" -- Green for completed
-            else
-                questStatusText = questStatusText .. "• " .. quest.name .. ": |cffff0000Not Completed|r\n" -- Red for not completed
-            end
+-- Initial content fill
+tabWarWithin.text:SetText(GenerateStatusText(warWithinData))
+tabMidnight.text:SetText(GenerateStatusText(midnightData))
+
+-- Show function with switch to Midnight
+local function ShowTracker()
+    if questFrame:IsShown() then return end
+    
+    questFrame:Show()
+    
+    -- First War Within
+    tabWarWithin:Click()
+    
+    -- Then Midnight (small delay for UI to settle)
+    C_Timer.After(0.01, function()
+        if tabMidnight and tabMidnight:IsShown() then
+            tabMidnight:Click()
         end
-        questStatusText = questStatusText .. "\n" -- Add a newline for separation between zones
-    end
-
-    return questStatusText
+    end)
 end
 
--- Function to update the quest status display
-local function UpdateQuestStatusDisplay()
-    if not IsInRaidOrDungeon() then
-        local statusText = GenerateQuestStatusText()
-        questStatusText:SetText(statusText)
-        scrollFrame:UpdateScrollChildRect()
-    end
-end
-
--- Event handler
-frame:SetScript("OnEvent", function(self, event, ...)
+-- Events
+eventFrame:SetScript("OnEvent", function(self, event)
     if event == "PLAYER_LOGIN" or event == "ZONE_CHANGED" or event == "QUEST_LOG_UPDATE" then
-        UpdateQuestStatusDisplay()
+        if questFrame:IsShown() then
+            UpdateVisibleTab()
+        end
     end
 end)
 
--- Slash command to toggle the quest frame
+-- Slash command
 SLASH_DELVERSQUESTTRACKER1 = "/dqt"
 SlashCmdList["DELVERSQUESTTRACKER"] = function()
     if questFrame:IsShown() then
         questFrame:Hide()
     else
-        UpdateQuestStatusDisplay()
-        questFrame:Show()
+        ShowTracker()
     end
 end
+
+-- Extra update on show
+questFrame:SetScript("OnShow", UpdateVisibleTab)
