@@ -11,8 +11,8 @@ VladDelves:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
 local G = {
     DelveButtons = {},
     Container     = nil,
-    ExpansionMapID = 2274, -- Khaz Algar
-    ExpansionExtraMapIDs = {2274, 2346, 2371},
+    ExpansionMapID = 2537, -- Quel'Thalas
+    ExpansionExtraMapIDs = {2537},
     config = {
         onlyBountiful = true,
         prioBountiful = false,
@@ -20,12 +20,11 @@ local G = {
     },
     -- areaPoiID → overcharged widgetID
     DelveConfig = {
-        [7779] = 7105, -- Fungal Folly
-        [7781] = 7041, -- Kriegval's Rest
-        [7785] = 7052, -- Nightfall Sanctum
-        [7789] = 7051, -- Skittering Breach
-        [7790] = 7053, -- The Spiral Weave
-        [8246] = 7104, -- Sidestreet Sluice
+        [76162] = 7105, -- Deadly Deeps
+        [27120] = 7041, -- Collegiate Calamity
+        [27120] = 7052, -- Parhelion Plaza
+        [27120] = 7051, -- Sunkiller Sanctum
+        [27120] = 7053, -- Shadowguard Point
     },
 }
 
@@ -228,16 +227,11 @@ local function TryAttachBountiful()
 
     local container = CreateFrame("Frame", "VladBountifulContainer", btn)
     container:SetSize(180, 80)
-    
-    -- Новое положение: выше на ~30 px и левее на 40 px
     container:SetPoint("CENTER", btn, "CENTER", -92, -8)
 
     container:SetScale(0.92)
     G.Container = container
-
-    -- Чтобы обновлялось, когда открывается Journeys
     btn:HookScript("OnShow", G.Update)
-    -- Обновление при изменении валют/квестов/сумок
     G.Update()
 
     return true
@@ -264,15 +258,12 @@ VladDelves:SetScript("OnEvent", function(self, event, arg1)
     elseif event == "PLAYER_REGEN_ENABLED" then
         StartAttachTicker()
     elseif event == "ADDON_LOADED" then
-        -- если другой аддон загрузил Journeys раньше
         StartAttachTicker()
     else
-        -- QUEST_LOG_UPDATE, BAG_UPDATE_DELAYED, CURRENCY...
         C_Timer.After(0.1, G.Update)
     end
 end)
 
--- Дополнительно — при открытии/закрытии самого Journeys
 if EncounterJournal then
     EncounterJournal:HookScript("OnShow", StartAttachTicker)
 end
