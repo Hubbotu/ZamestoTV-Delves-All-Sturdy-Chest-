@@ -1,4 +1,4 @@
--- Bountiful Delves Tracker Addon for WoW 11.0: The War Within
+-- Bountiful Delves Tracker Addon for WoW 12.0: Midnight
 
 -- Saved Variables
 ZDH_SavedVars = ZDH_SavedVars or {
@@ -77,7 +77,7 @@ local function GetKeyFlags()
             keysObtained = keysObtained + 1
         end
     end
-    return "Keys this week: " .. keysObtained .. "/4", keysObtained
+    return "Keys this week: " .. keysObtained .. "/6", keysObtained
 end
 
 -- Delve List Management (unchanged)

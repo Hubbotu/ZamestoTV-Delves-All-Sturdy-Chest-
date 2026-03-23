@@ -55,7 +55,6 @@ local function UpdateCounts()
     if shardInfo and shardInfo.discovered then
         local weeklyEarned = shardInfo.quantityEarnedThisWeek or 0
 
-        -- Жёстко задаём кап
         local WEEKLY_CAP = 600
 
         frame.shardsText:SetText("Shards: " .. weeklyEarned .. " / " .. WEEKLY_CAP)

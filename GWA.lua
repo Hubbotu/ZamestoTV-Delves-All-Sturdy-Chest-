@@ -208,27 +208,24 @@ local function CreateRaidData()
             raidFrame, "TOPLEFT", "TOPLEFT", xOffset, 0
         )
     end
-    local rowCounter = 1
-    for i = 2, #lootData.raid.bosses do 
+    for i = 2, #lootData.raid.bosses do
         local key = lootData.raid.bosses[i]
-        local yOffset = -16 * rowCounter
+        local yOffset = -16 * (i - 1)
         CreateTextureFrame(
             raidFrame, 30, 16, {0, 0, 0, 1}, tostring(key), 8, "CENTER",
             raidFrame, "TOPLEFT", "TOPLEFT", 0, yOffset
         )
         for j, header in ipairs(lootData.raid.headers) do
             local ilvl = lootData.raid[header].bosses[key]
-            if ilvl then
-                local track = tracks[ilvl]
-                local color = trackColors[track] or {1, 1, 1, 1}
-                local xOffset = j * 30
-                CreateTextureFrame(
-                    raidFrame, 30, 16, color, tostring(ilvl), 8, "CENTER",
-                    raidFrame, "TOPLEFT", "TOPLEFT", xOffset, yOffset
-                )
-            end
+            local track = tracks[ilvl]
+            local color = trackColors[track] or {1, 1, 1, 1}
+            local xOffset = j * 30
+            
+            CreateTextureFrame(
+                raidFrame, 30, 16, color, tostring(ilvl), 8, "CENTER",
+                raidFrame, "TOPLEFT", "TOPLEFT", xOffset, yOffset
+            )
         end
-        rowCounter = rowCounter + 1
     end
 end
 
