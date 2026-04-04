@@ -12,125 +12,67 @@ local G = {
     DelveButtons = {},
     Container     = nil,
     ExpansionMapID = 2537, -- Quel'Thalas
-    ExpansionExtraMapIDs = {2537},
     config = {
         onlyBountiful = true,
-        prioBountiful = false,
         taintSafe     = false,
     },
-    -- areaPoiID → overcharged widgetID
+    -- Исправленные areaPoiID -> widgetID для Midnight
     DelveConfig = {
-        [76162] = 7105, -- Deadly Deeps
-        [27120] = 7041, -- Collegiate Calamity
-        [27120] = 7052, -- Parhelion Plaza
-        [27120] = 7051, -- Sunkiller Sanctum
-        [27120] = 7053, -- Shadowguard Point
+        [8432] = 0, -- Shadowguard Point
+        [8430] = 0, -- Sunkiller Sanctum
+        [8436] = 0,    -- The Gulf of Memory
+        [8434] = 0,    -- The Grudge Pit
+        [8444] = 0,    -- Atal'Aman
+        [8442] = 0,    -- Twilight Crypts
+        [8673] = 0,    -- Shadow Enclave
+        [8426] = 0, -- Collegiate Calamity
+        [8440] = 0,    -- The Darkway
+        [8428] = 0, -- Parhelion Plaza
     },
 }
 
 ---------------------------------------------------------
--- Collect Bountiful Delves
+-- Сбор данных (GetDelves)
 ---------------------------------------------------------
 function G.GetDelves()
-    local dupe = {}
     local result = {}
-    local areas = C_Map.GetMapChildrenInfo(G.ExpansionMapID, Enum.UIMapType.Zone, true) or {}
+    local dupe = {}
+    local mapIDs = {2405, 2413, 2437, 2395, 2393, 2424, 2537}
 
-    for _, mapID in ipairs(G.ExpansionExtraMapIDs) do
-        local info = C_Map.GetMapInfo(mapID)
-        if info then
-            info.isExtraMap = true
-            table.insert(areas, info)
-        end
-    end
-
-    for _, area in ipairs(areas) do
-        local mapID = area.mapID
+    for _, mapID in ipairs(mapIDs) do
         local areaPOIs = C_AreaPoiInfo.GetDelvesForMap(mapID) or {}
         for _, areaPoiID in ipairs(areaPOIs) do
-            local poi = C_AreaPoiInfo.GetAreaPOIInfo(mapID, areaPoiID)
-            if poi and poi.atlasName and (poi.isPrimaryMapForPOI or area.isExtraMap) then
-                if poi.atlasName:find("bountiful") and not dupe[poi.name] then
-                    dupe[poi.name] = true
+            if G.DelveConfig[areaPoiID] or not G.config.onlyBountiful then
+                local poi = C_AreaPoiInfo.GetAreaPOIInfo(mapID, areaPoiID)
+                if poi and poi.atlasName and poi.atlasName:find("bountiful") then
+                    if not dupe[areaPoiID] then
+                        dupe[areaPoiID] = true
+                        
+                        local isOvercharged = false
+                        local widgetID = G.DelveConfig[areaPoiID]
+                        if widgetID and widgetID > 0 then
+                            local vis = C_UIWidgetManager.GetSpacerVisualizationInfo(widgetID)
+                            isOvercharged = vis and vis.shownState == 1
+                        end
 
-                    local isOvercharged = false
-                    local widgetID = G.DelveConfig[areaPoiID]
-                    if widgetID then
-                        local vis = C_UIWidgetManager.GetSpacerVisualizationInfo(widgetID)
-                        isOvercharged = vis and vis.shownState == 1
+                        table.insert(result, {
+                            name          = poi.name,
+                            zone          = C_Map.GetMapInfo(mapID) and C_Map.GetMapInfo(mapID).name or "Unknown",
+                            atlas         = poi.atlasName,
+                            mapID         = mapID,
+                            areaPoiID     = areaPoiID,
+                            isOvercharged = isOvercharged,
+                        })
                     end
-
-                    result[#result+1] = {
-                        name         = poi.name,
-                        zone         = area.name,
-                        atlas        = poi.atlasName,
-                        mapID        = mapID,
-                        areaPoiID    = areaPoiID,
-                        bountiful    = true,
-                        isOvercharged = isOvercharged,
-                    }
                 end
             end
         end
     end
-
-    table.sort(result, function(a,b)
-        if a.isOvercharged ~= b.isOvercharged then return a.isOvercharged end
-        if a.zone ~= b.zone then return a.zone > b.zone end
-        return a.name > b.name
-    end)
-
     return result
 end
 
 ---------------------------------------------------------
--- Tooltip
----------------------------------------------------------
-local function OnDelveEnter(self)
-    local delve = self.delve
-    if not delve then return end
-
-    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-    GameTooltip:AddLine(format("|A:%s:0:0|a %s", delve.atlas, delve.name), 1,1,1)
-    GameTooltip:AddLine(delve.zone, 0.9,0.9,0.9)
-
-    if delve.isOvercharged then
-        GameTooltip:AddLine("Overcharged Today", 1, 0.6, 0)
-    else
-        GameTooltip:AddLine("Bountiful", 0, 1, 0)
-    end
-    GameTooltip:Show()
-end
-
-local function OnDelveLeave()
-    GameTooltip:Hide()
-end
-
----------------------------------------------------------
--- Click → open world map + highlight pin
----------------------------------------------------------
-local function OnDelveClick(self, button, down)
-    if G.config.taintSafe or down then return end
-
-    local delve = self.delve
-    if not delve then return end
-
-    if not WorldMapFrame:IsShown() then
-        WorldMapFrame:HandleUserActionOpenSelf()
-    end
-
-    WorldMapFrame:SetMapID(delve.mapID)
-
-    for pin in WorldMapFrame:EnumeratePinsByTemplate("DelveEntrancePinTemplate") do
-        if pin.areaPoiID == delve.areaPoiID then
-            pin:OnClick(button, down)
-            break
-        end
-    end
-end
-
----------------------------------------------------------
--- Button factory
+-- Фабрика кнопок (Оригинальный стиль из 1-го сообщения)
 ---------------------------------------------------------
 function G.CreateDelveButton(parent, index)
     local button = CreateFrame("Button", nil, parent, "SecureActionButtonTemplate")
@@ -148,7 +90,7 @@ function G.CreateDelveButton(parent, index)
 
     button.Icon = button:CreateTexture(nil, "ARTWORK")
     button.Icon:SetAllPoints()
-    button.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)   -- чуть красивее обрезка
+    button.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
     button.Border = button:CreateTexture(nil, "OVERLAY")
     button.Border:SetPoint("CENTER")
@@ -157,22 +99,39 @@ function G.CreateDelveButton(parent, index)
     button.Border:SetVertexColor(0.4, 0.7, 1, 0.9)
     button.Border:Hide()
 
-    button:SetScript("OnEnter", OnDelveEnter)
-    button:SetScript("OnLeave", OnDelveLeave)
-    button:SetScript("OnClick", OnDelveClick)
+    button:SetScript("OnEnter", function(self)
+        local d = self.delve
+        if not d then return end
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:AddLine(format("|A:%s:0:0|a %s", d.atlas, d.name), 1,1,1)
+        GameTooltip:AddLine(d.zone, 0.9,0.9,0.9)
+        if d.isOvercharged then
+            GameTooltip:AddLine("Overcharged Today", 1, 0.6, 0)
+        else
+            GameTooltip:AddLine("Bountiful", 0, 1, 0)
+        end
+        GameTooltip:Show()
+    end)
+    
+    button:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    
+    button:SetScript("OnClick", function(self)
+        local d = self.delve
+        if not d then return end
+        if not WorldMapFrame:IsShown() then WorldMapFrame:HandleUserActionOpenSelf() end
+        WorldMapFrame:SetMapID(d.mapID)
+    end)
 
     return button
 end
 
 ---------------------------------------------------------
--- Update icons
+-- Обновление (Update)
 ---------------------------------------------------------
 function G.Update()
     if InCombatLockdown() or not G.Container then return end
 
-    for _, btn in ipairs(G.DelveButtons) do
-        btn:Hide()
-    end
+    for _, btn in ipairs(G.DelveButtons) do btn:Hide() end
 
     local delves = G.GetDelves()
     if #delves == 0 then return end
@@ -192,16 +151,13 @@ function G.Update()
 end
 
 ---------------------------------------------------------
--- Attach to the same frame as the keys addon
+-- Привязка
 ---------------------------------------------------------
 local SEASON_WAR_WITHIN = "UI-Journeys-Delve-Button"
 local SEASON_MIDNIGHT   = "UI-Journeys-Midnight-Button"
 
 local function FindDelvesButtonFrame()
-    if not EncounterJournalJourneysFrame or not EncounterJournalJourneysFrame.JourneysList then
-        return nil
-    end
-
+    if not EncounterJournalJourneysFrame or not EncounterJournalJourneysFrame.JourneysList then return nil end
     local scroll = EncounterJournalJourneysFrame.JourneysList.ScrollTarget
     if not scroll then return nil end
 
@@ -221,44 +177,34 @@ end
 
 local function TryAttachBountiful()
     if G.Container then return true end
-
     local btn = FindDelvesButtonFrame()
     if not btn then return false end
 
     local container = CreateFrame("Frame", "VladBountifulContainer", btn)
     container:SetSize(180, 80)
     container:SetPoint("CENTER", btn, "CENTER", -92, -8)
-
     container:SetScale(0.92)
+    
     G.Container = container
     btn:HookScript("OnShow", G.Update)
     G.Update()
-
     return true
 end
 
 ---------------------------------------------------------
--- Loader & events
+-- Загрузка
 ---------------------------------------------------------
-local attachTicker
-
 local function StartAttachTicker()
-    if attachTicker then return end
-    attachTicker = C_Timer.NewTicker(0.4, function(t)
-        if TryAttachBountiful() then
-            t:Cancel()
-            attachTicker = nil
-        end
-    end)
+    C_Timer.NewTicker(0.4, function(t)
+        if TryAttachBountiful() then t:Cancel() end
+    end, 10)
 end
 
 VladDelves:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == addonName then
         StartAttachTicker()
     elseif event == "PLAYER_REGEN_ENABLED" then
-        StartAttachTicker()
-    elseif event == "ADDON_LOADED" then
-        StartAttachTicker()
+        G.Update()
     else
         C_Timer.After(0.1, G.Update)
     end

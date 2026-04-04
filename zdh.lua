@@ -1,11 +1,10 @@
 -- Bountiful Delves Tracker Addon for WoW 12.0: Midnight
-
 -- Saved Variables
 ZDH_SavedVars = ZDH_SavedVars or {
-    mode = 1,               -- 1 = Default, 2 = Minimalist, 3 = Anchor
+    mode = 1, -- 1 = Default, 2 = Minimalist, 3 = Anchor
     autohide = false,
     isMinimized = false,
-    wasVisible = true,      -- NEW: remembers if user wanted the frame visible
+    wasVisible = true,
     position = { x = 0, y = 0 },
 }
 
@@ -13,7 +12,6 @@ ZDH_SavedVars = ZDH_SavedVars or {
 ZDH_GlobalScripting = {}
 
 -- Core Functionality
-
 function ZDH_GlobalScripting:IsWeeklyRewardForDelvesFull()
     local worldActivitiesRewards = C_WeeklyRewards.GetActivities(Enum.WeeklyRewardChestThresholdType.World)
     local bestReward = worldActivitiesRewards[3]
@@ -23,23 +21,20 @@ end
 function ZDH_GlobalScripting:GetShowValue(mode, wantVisible, ...)
     local args = {...}
     local allTrue = true
-
     if mode ~= ZDH_SavedVars.mode then
         return false
     end
-
     for _, value in ipairs(args) do
         if not value then
             allTrue = false
             break
         end
     end
-
     if ZDH_SavedVars.autohide then
         local done = ZDH_GlobalScripting:IsWeeklyRewardForDelvesFull()
         return allTrue and wantVisible and not done
     end
-    
+   
     return allTrue and wantVisible
 end
 
@@ -61,7 +56,7 @@ local function GetDelveRewardLevel(index)
     return reward and reward.level or "?"
 end
 
--- Key Tracking Functions
+-- Key Tracking
 local function GetKeyNumber()
     local keys = "|T4622270:20|t Keys: "
     local keyInfos = C_CurrencyInfo.GetCurrencyInfo(3028) -- Delve Key Currency ID
@@ -69,26 +64,27 @@ local function GetKeyNumber()
     return keys
 end
 
-local function GetKeyFlags()
-    local keysQuestIDs = {91175, 91176, 91177, 91178}
-    local keysObtained = 0
-    for _, questID in ipairs(keysQuestIDs) do
-        if C_QuestLog.IsQuestFlaggedCompleted(questID) then
-            keysObtained = keysObtained + 1
-        end
+-- Shards (3310) — WEEKLY MAX / 600
+local function GetShardsText()
+    local shardInfo = C_CurrencyInfo.GetCurrencyInfo(3310)
+    if shardInfo and shardInfo.discovered then
+        local weeklyEarned = shardInfo.quantityEarnedThisWeek or 0
+        local WEEKLY_CAP = 600
+        return "Shards: |cFF00FF00" .. weeklyEarned .. "|r / " .. WEEKLY_CAP
+    else
+        return "Shards: —"
     end
-    return "Keys this week: " .. keysObtained .. "/6", keysObtained
 end
 
--- Delve List Management (unchanged)
+-- Delve List Management
 local DelvesBountifulList = {
     Zones = {
-        ["Isle of Dorn"] = { uiMapID = 2248, delves = {{id = 7787, name = "Earthcrawl Mines"}, {id = 7781, name = "Kriegval's Rest"}, {id = 7779, name = "Fungal Folly"}} },
-        ["Hallowfall"] = { uiMapID = 2215, delves = {{id = 7789, name = "Skittering Breach"}, {id = 7785, name = "Nightfall Sanctum"}, {id = 7783, name = "The Sinkhole"}, {id = 7780, name = "Mycomancer Cavern"}} },
-        ["The Ringing Deeps"] = { uiMapID = 2214, delves = {{id = 7782, name = "The Waterworks"}, {id = 7788, name = "The Dread Pit"}, {id = 8181, name = "Excavation Site 9"}} },
-        ["Azj-Kahet"] = { uiMapID = 2255, delves = {{id = 7790, name = "The Spiral Weave"}, {id = 7784, name = "Tak-Rethan Abyss"}, {id = 7786, name = "The Underkeep"}} },
-        ["Undermine"] = { uiMapID = 2346, delves = {{id = 8246, name = "Sidestreet Sluice"}} },	
-        ["K'aresh"] = { uiMapID = 2371, delves = {{id = 8273, name = "Archival Assault"}} },			
+        ["Voidstorm"] = { uiMapID = 2405, delves = {{id = 8432, name = "Shadowguard Point"}, {id = 8430, name = "Sunkiller Sanctum"}} },
+        ["Harandar"] = { uiMapID = 2413, delves = {{id = 8436, name = "The Gulf of Memory"}, {id = 8434, name = "The Grudge Pit"}} },
+        ["Zul'Aman"] = { uiMapID = 2437, delves = {{id = 8444, name = "Atal'Aman"}, {id = 8442, name = "Twilight Crypts"}} },
+        ["Eversong Woods"] = { uiMapID = 2395, delves = {{id = 8438, name = "Shadow Enclave"}} },
+        ["Silvermoon City"] = { uiMapID = 2393, delves = {{id = 8426, name = "Collegiate Calamity"}, {id = 8440, name = "The Darkway"}} },
+        ["Isle of Quel'Danas"] = { uiMapID = 2424, delves = {{id = 8428, name = "Parhelion Plaza"}} },
     }
 }
 
@@ -123,24 +119,30 @@ end
 function DelvesBountifulList:LayoutText()
     local allDelves = self:GetBountifulDelves()
     local text = ""
+    
     local blueDelves = {
-        ["Earthcrawl Mines"] = true, ["Kriegval's Rest"] = true, ["Fungal Folly"] = true,
-        ["Skittering Breach"] = true, ["Nightfall Sanctum"] = true, ["The Sinkhole"] = true,
-        ["Mycomancer Cavern"] = true, ["The Waterworks"] = true, ["The Dread Pit"] = true,
-        ["The Spiral Weave"] = true, ["Tak-Rethan Abyss"] = true, ["The Underkeep"] = true,
-        ["Excavation Site 9"] = true, ["Sidestreet Sluice"] = true, ["Archival Assault"] = true,
+        ["Shadowguard Point"] = true, ["Sunkiller Sanctum"] = true,
+        ["The Gulf of Memory"] = true, ["The Grudge Pit"] = true,
+        ["Atal'Aman"] = true, ["Twilight Crypts"] = true,
+        ["Shadow Enclave"] = true,
+        ["Collegiate Calamity"] = true, ["The Darkway"] = true,
+        ["Parhelion Plaza"] = true,
     }
 
     for zoneName, zoneData in pairs(self.Zones) do
         local zoneInfo = C_Map.GetMapInfo(zoneData.uiMapID)
         if zoneInfo and self:ZoneHasDelves(zoneData.delves, allDelves) then
-            if text ~= "" then text = text .. "\n" end
+            if text ~= "" then 
+                text = text .. "\n" 
+            end
             text = text .. "|cffffd700" .. zoneInfo.name .. "|r\n"
+            
             for _, delve in ipairs(zoneData.delves) do
                 for _, otherDelve in ipairs(allDelves) do
                     if delve.id == otherDelve.areaPoiID then
-                        local color = blueDelves[otherDelve.name] and "|cADD8E6FF" or ""
+                        local color = blueDelves[otherDelve.name] and "|cADD8E6FF" or "|cffffffff"
                         text = text .. color .. otherDelve.name .. "|r\n"
+                        break
                     end
                 end
             end
@@ -162,7 +164,7 @@ end
 
 -- UI Frame Creation
 local ZDH = CreateFrame("Frame", "ZDHFrame", UIParent)
-ZDH:SetSize(210, 330)
+ZDH:SetSize(210, 340)
 ZDH:SetPoint("CENTER", UIParent, "CENTER", ZDH_SavedVars.position.x, ZDH_SavedVars.position.y)
 ZDH:SetMovable(true)
 ZDH:EnableMouse(true)
@@ -174,7 +176,7 @@ ZDH:SetScript("OnDragStop", function(self)
     ZDH_SavedVars.position.x = x - GetScreenWidth() / 2
     ZDH_SavedVars.position.y = y - GetScreenHeight() / 2
 end)
-ZDH:Hide() -- Start hidden - we decide later
+ZDH:Hide()
 
 -- Background and Border
 ZDH.bg = ZDH:CreateTexture(nil, "BACKGROUND")
@@ -201,7 +203,7 @@ ZDH.toggleButton:SetScript("OnClick", function()
     ZDH:UpdateUI()
 end)
 
--- Text elements (unchanged layout)
+-- Text elements
 ZDH.progressText = ZDH:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 ZDH.progressText:SetPoint("TOPLEFT", ZDH, "TOPLEFT", 10, -40)
 ZDH.progressText:SetJustifyH("LEFT")
@@ -221,25 +223,24 @@ ZDH.delveList:SetJustifyH("LEFT")
 ZDH.delveList:SetWidth(180)
 
 ZDH.keysText = ZDH:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-ZDH.keysText:SetPoint("TOPLEFT", ZDH.delveList, "BOTTOMLEFT", 0, -10)
+ZDH.keysText:SetPoint("TOPLEFT", ZDH.delveList, "BOTTOMLEFT", 0, -15)
 
-ZDH.keysGainedText = ZDH:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-ZDH.keysGainedText:SetPoint("TOPLEFT", ZDH.keysText, "BOTTOMLEFT", 0, -5)
+ZDH.shardsText = ZDH:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+ZDH.shardsText:SetPoint("TOPLEFT", ZDH.keysText, "BOTTOMLEFT", 0, -5)
 
 ZDH.timerText = ZDH:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-ZDH.timerText:SetPoint("TOPLEFT", ZDH.keysGainedText, "BOTTOMLEFT", 0, -5)
+ZDH.timerText:SetPoint("TOPLEFT", ZDH.shardsText, "BOTTOMLEFT", 0, -8)
 
--- Update UI – now takes into account persisted visibility intent
+-- Update UI
 function ZDH:UpdateUI(forceShow)
     local mode = ZDH_SavedVars.mode
     local shouldBeVisible = forceShow or ZDH_SavedVars.wasVisible
-    
+   
     local show = ZDH_GlobalScripting:GetShowValue(
         mode,
         shouldBeVisible,
         not ZDH_SavedVars.isMinimized
     )
-
     if not show then
         ZDH:Hide()
         return
@@ -247,7 +248,7 @@ function ZDH:UpdateUI(forceShow)
 
     ZDH:Show()
     ZDH.toggleButton:SetNormalTexture(
-        ZDH_SavedVars.isMinimized and "Interface\\Buttons\\UI-PlusButton-Up" 
+        ZDH_SavedVars.isMinimized and "Interface\\Buttons\\UI-PlusButton-Up"
                                  or "Interface\\Buttons\\UI-MinusButton-Up"
     )
 
@@ -275,7 +276,7 @@ function ZDH:UpdateUI(forceShow)
     -- Common elements
     ZDH.delveList:SetText(DelvesBountifulList:LayoutText())
     ZDH.keysText:SetText(GetKeyNumber())
-    ZDH.keysGainedText:SetText(GetKeyFlags())
+    ZDH.shardsText:SetText(GetShardsText())
 end
 
 -- Real-Time Timer
@@ -290,8 +291,7 @@ end)
 ZDH:RegisterEvent("PLAYER_ENTERING_WORLD")
 ZDH:SetScript("OnEvent", function(self, event, ...)
     if event == "PLAYER_ENTERING_WORLD" then
-        -- Initial restore attempt
-        C_Timer.After(0.5, function()  -- small delay helps with UI loading order
+        C_Timer.After(0.5, function()
             self:UpdateUI()
         end)
     elseif self:IsShown() then
@@ -299,11 +299,10 @@ ZDH:SetScript("OnEvent", function(self, event, ...)
     end
 end)
 
--- Improved Slash Command – now also manages wasVisible
+-- Slash Command
 SLASH_ZDH1 = "/zdh"
 SlashCmdList["ZDH"] = function(msg)
     msg = (msg or ""):trim():lower()
-
     if msg == "hide" then
         ZDH_SavedVars.wasVisible = false
         ZDH:Hide()
