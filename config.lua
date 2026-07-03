@@ -17,6 +17,38 @@ ns.defaults = {
     },
 }
 
+local gwaProfileExportText = ""
+local gwaProfileImportText = ""
+local gwaProfileStatusText = ""
+
+local function EnsureGWASavedVars()
+    local codec = _G.GWA_ProfileCodec
+    if codec and codec.EnsureSavedVars then
+        GWA_SavedVars = codec.EnsureSavedVars(GWA_SavedVars)
+    else
+        GWA_SavedVars = GWA_SavedVars or { framesVisible = true, positions = {} }
+        GWA_SavedVars.positions = GWA_SavedVars.positions or {}
+    end
+    return GWA_SavedVars
+end
+
+local function BuildGWAProfileString()
+    local codec = _G.GWA_ProfileCodec
+    local vars = EnsureGWASavedVars()
+    if codec and codec.BuildProfileString then
+        return codec.BuildProfileString(vars)
+    end
+    return ""
+end
+
+local function ImportGWAProfileString(data)
+    local codec = _G.GWA_ProfileCodec
+    if not (codec and codec.ImportProfileString) then
+        return false, "Profile codec is not loaded."
+    end
+    return codec.ImportProfileString(data, EnsureGWASavedVars())
+end
+
 ns.options = {
     type = "group",
     name = myname:gsub("HandyNotes_", ""):gsub("([A-Z])", " %1"):gsub("^%s+", ""),
@@ -86,6 +118,78 @@ ns.options = {
                         ns.HL:Refresh()
                     end,
                     order = 30,
+                },
+            },
+        },
+        gwa_profile = {
+            type = "group",
+            name = "Great Vault Overlay Profile",
+            inline = true,
+            order = 100,
+            args = {
+                info = {
+                    type = "description",
+                    order = 1,
+                    name = "Import/export GWA frame positions, scale, and font settings.",
+                },
+                export_now = {
+                    type = "execute",
+                    order = 5,
+                    name = "Generate Export String",
+                    func = function()
+                        gwaProfileExportText = BuildGWAProfileString()
+                        gwaProfileStatusText = "Export string generated. Copy from the box below."
+                    end,
+                },
+                export_text = {
+                    type = "input",
+                    order = 10,
+                    name = "Export String",
+                    width = "full",
+                    multiline = 4,
+                    get = function()
+                        return gwaProfileExportText
+                    end,
+                    set = function(_, value)
+                        gwaProfileExportText = value
+                    end,
+                },
+                import_text = {
+                    type = "input",
+                    order = 20,
+                    name = "Import String",
+                    width = "full",
+                    multiline = 4,
+                    get = function()
+                        return gwaProfileImportText
+                    end,
+                    set = function(_, value)
+                        gwaProfileImportText = value
+                    end,
+                },
+                import_apply = {
+                    type = "execute",
+                    order = 30,
+                    name = "Apply Import String",
+                    func = function()
+                        local ok, err = ImportGWAProfileString(gwaProfileImportText)
+                        if ok then
+                            if type(_G.GWA_ApplyImportedProfile) == "function" then
+                                _G.GWA_ApplyImportedProfile()
+                            end
+                            gwaProfileStatusText = "Import successful. Open or reopen Great Vault to verify."
+                            print("GWA: Profile imported from Options panel.")
+                        else
+                            gwaProfileStatusText = "Import failed: " .. tostring(err)
+                        end
+                    end,
+                },
+                status = {
+                    type = "description",
+                    order = 40,
+                    name = function()
+                        return gwaProfileStatusText ~= "" and gwaProfileStatusText or " "
+                    end,
                 },
             },
         },
