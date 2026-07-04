@@ -26,6 +26,7 @@ Localization/deDE.lua
 
 brannhelps.lua
 handler.lua
+GWA_ProfileCodec.lua
 config.lua
 Delves.lua
 story.lua
