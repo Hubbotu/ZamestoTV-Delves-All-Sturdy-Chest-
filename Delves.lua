@@ -39,6 +39,8 @@ ns.map_spellids = {
     -- [2528] = 0, -- Sunkiller Sanctum (Upper)- or 2540
     -- [2571] = 0, -- Sunkiller Sanctum (Lower)
     -- [2506] = 0, -- Shadowguard Point
+	-- [2633] = 0, -- The Ring of Glory
+	-- [2635] = 0, -- Gnarldor Isle
 }
 
 ns.points = {
@@ -855,6 +857,58 @@ ns.points = {
             label = L["Sturdy Chest"],
             cont = true,
             quest = 94025,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+    },
+	[2633] = { -- The Ring of Glory
+        [25187373] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 96803,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [48559479] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 96806,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [43112330] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 96807,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+    },
+	[2635] = { -- Gnarldor Isle
+        [28694171] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 96805,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [52414087] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 96804,
+            Zamro = true,
+            note = L["Sturdy Chest Note"],
+            pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+        }),
+        [60436811] = ({
+            label = L["Sturdy Chest"],
+            cont = true,
+            quest = 96802,
             Zamro = true,
             note = L["Sturdy Chest Note"],
             pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
