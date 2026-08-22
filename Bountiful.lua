@@ -12,6 +12,7 @@ local G = {
         [2405] = "Voidstorm",
         [2437] = "Zul'Aman",
         [2413] = "Harandar",
+		[2512] = "The Coiled Isle",
     },
     config = { onlyBountiful = true, taintSafe = false },
     DelveConfig = {
@@ -28,7 +29,7 @@ local G = {
 ---------------------------------------------------------
 function G.GetDelves()
     local dupe, result = {}, {}
-    local scanOrder = {2395, 2393, 2424, 2405, 2437, 2413, 2537}
+    local scanOrder = {2395, 2393, 2424, 2405, 2437, 2413, 2537, 2512}
     for _, mapID in ipairs(scanOrder) do
         local areaPOIs = C_AreaPoiInfo.GetDelvesForMap(mapID) or {}
         for _, areaPoiID in ipairs(areaPOIs) do

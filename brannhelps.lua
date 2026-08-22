@@ -39,8 +39,8 @@ local companionCurioData = {
 
     Valeera = {
         TANK = {
-            combatCurio   = {name = "Porcelain Blade Tip",   itemID = 257683},
-            utilityCurio  = {name = "Mandate of Sacred Death", itemID = 249225},
+            combatCurio   = {name = "Corrosive Bilespear",   itemID = 249223},
+            utilityCurio  = {name = "Soul-Cracking Dreamcatcher", itemID = 249228},
             roleTexture   = "Interface\\LFGFrame\\UI-LFG-ICON-ROLES",
             roleTexCoord  = {0, 0.26171875, 0.26171875, 0.5234375},
             groupIcon     = 135806,
@@ -48,8 +48,8 @@ local companionCurioData = {
             yOffset       = -70
         },
         HEALER = {
-            combatCurio   = {name = "Porcelain Blade Tip",   itemID = 257683},
-            utilityCurio  = {name = "Mandate of Sacred Death", itemID = 249225},
+            combatCurio   = {name = "Corrosive Bilespear",   itemID = 249223},
+            utilityCurio  = {name = "Soul-Cracking Dreamcatcher", itemID = 249228},
             roleTexture   = "Interface\\LFGFrame\\UI-LFG-ICON-ROLES",
             roleTexCoord  = {0.26171875, 0.5234375, 0, 0.26171875},
             groupIcon     = 135769,
@@ -57,8 +57,8 @@ local companionCurioData = {
             yOffset       = 0
         },
         DAMAGE = {
-            combatCurio   = {name = "Porcelain Blade Tip",   itemID = 257683},
-            utilityCurio  = {name = "Mandate of Sacred Death", itemID = 249225},
+            combatCurio   = {name = "Corrosive Bilespear",   itemID = 249223},
+            utilityCurio  = {name = "Soul-Cracking Dreamcatcher", itemID = 249228},
             roleTexture   = "Interface\\LFGFrame\\UI-LFG-ICON-ROLES",
             roleTexCoord  = {0.26171875, 0.5234375, 0.26171875, 0.5234375},
             groupIcon     = 135274,
