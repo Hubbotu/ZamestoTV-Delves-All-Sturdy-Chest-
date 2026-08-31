@@ -38,32 +38,13 @@ local companionCurioData = {
     },
 
     Valeera = {
-        TANK = {
-            combatCurio   = {name = "Corrosive Bilespear",   itemID = 249223},
-            utilityCurio  = {name = "Soul-Cracking Dreamcatcher", itemID = 249228},
-            roleTexture   = "Interface\\LFGFrame\\UI-LFG-ICON-ROLES",
-            roleTexCoord  = {0, 0.26171875, 0.26171875, 0.5234375},
-            groupIcon     = 135806,
-            xOffset       = -132,
-            yOffset       = -70
-        },
-        HEALER = {
-            combatCurio   = {name = "Corrosive Bilespear",   itemID = 249223},
-            utilityCurio  = {name = "Soul-Cracking Dreamcatcher", itemID = 249228},
-            roleTexture   = "Interface\\LFGFrame\\UI-LFG-ICON-ROLES",
-            roleTexCoord  = {0.26171875, 0.5234375, 0, 0.26171875},
-            groupIcon     = 135769,
-            xOffset       = -132,
-            yOffset       = 0
-        },
-        DAMAGE = {
-            combatCurio   = {name = "Corrosive Bilespear",   itemID = 249223},
-            utilityCurio  = {name = "Soul-Cracking Dreamcatcher", itemID = 249228},
-            roleTexture   = "Interface\\LFGFrame\\UI-LFG-ICON-ROLES",
-            roleTexCoord  = {0.26171875, 0.5234375, 0.26171875, 0.5234375},
-            groupIcon     = 135274,
-            xOffset       = -132,
-            yOffset       = 70
+        combatCurio  = {name = "Corrosive Bilespear",        itemID = 249223},
+        utilityCurio = {name = "Soul-Cracking Dreamcatcher", itemID = 249228},
+        curioToxin   = {name = "Bursting Toad Toxin",        spellID = 1305904},
+        roles = {
+            { texture = "Interface\\LFGFrame\\UI-LFG-ICON-ROLES", texCoord = {0, 0.26171875, 0.26171875, 0.5234375} }, -- Tank
+            { texture = "Interface\\LFGFrame\\UI-LFG-ICON-ROLES", texCoord = {0.26171875, 0.5234375, 0, 0.26171875} }, -- Healer
+            { texture = "Interface\\LFGFrame\\UI-LFG-ICON-ROLES", texCoord = {0.26171875, 0.5234375, 0.26171875, 0.5234375} } -- DPS
         }
     }
 }
@@ -95,21 +76,19 @@ local function GetCurioDataForCompanion()
     return companionCurioData[companion]
 end
 
--- ==================== Role Frame Creation ====================
+-- ==================== Role Frame Creation (Brann) ====================
 local function CreateRoleFrame(parent, role, data)
     local frame = CreateFrame("Frame", "DelveCurioReminder_" .. role, parent)
     frame:SetSize(300, ICON_SIZE * 2 + 20)
     frame:SetPoint("CENTER", parent, "CENTER", data.xOffset, data.yOffset)
     frame:SetFrameStrata("MEDIUM")
 
-    -- Role icon
     local roleIcon = frame:CreateTexture(nil, "ARTWORK")
     roleIcon:SetSize(ICON_SIZE, ICON_SIZE)
     roleIcon:SetPoint("LEFT", frame, "LEFT", 0, ICON_SIZE / 2)
     roleIcon:SetTexture(data.roleTexture)
     roleIcon:SetTexCoord(unpack(data.roleTexCoord))
 
-    -- Combat curio icon
     local combatIcon = frame:CreateTexture(nil, "ARTWORK")
     combatIcon:SetSize(ICON_SIZE, ICON_SIZE)
     combatIcon:SetPoint("LEFT", roleIcon, "RIGHT", 5, 0)
@@ -127,7 +106,6 @@ local function CreateRoleFrame(parent, role, data)
     combatCount:SetPoint("LEFT", combatText, "RIGHT", 5, 0)
     combatCount:SetText("")
 
-    -- Utility curio icon
     local utilityIcon = frame:CreateTexture(nil, "ARTWORK")
     utilityIcon:SetSize(ICON_SIZE, ICON_SIZE)
     utilityIcon:SetPoint("LEFT", frame, "LEFT", ICON_SIZE + 5, -ICON_SIZE / 2)
@@ -137,7 +115,7 @@ local function CreateRoleFrame(parent, role, data)
     utilityText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE")
     utilityText:SetTextColor(0, 1, 0.804, 1)
     utilityText:SetPoint("LEFT", utilityIcon, "RIGHT", 5, 0)
-    utilityText:SetText("Utility Curio: " .. data.utilityCurio.name)
+    utilityText:SetText("Utility Curio: " .. data.utilityCurio.name) -- Исправлено: SetText вместо Text
 
     local utilityCount = frame:CreateFontString(nil, "OVERLAY")
     utilityCount:SetFont("Fonts\\FRIZQT__.TTF", 24)
@@ -153,12 +131,106 @@ local function CreateRoleFrame(parent, role, data)
     return frame
 end
 
+-- ==================== Role Frame Creation (Valeera) ====================
+local function CreateValeeraFrame(parent, data)
+    local frame = CreateFrame("Frame", "DelveCurioReminder_Valeera", parent)
+    frame:SetSize(320, ICON_SIZE * 3 + 40)
+    frame:SetPoint("CENTER", parent, "CENTER", -80, 0)
+    frame:SetFrameStrata("MEDIUM")
+
+    -- 1. Иконки ролей сверху
+    local prevRoleIcon = nil
+    for i, roleData in ipairs(data.roles) do
+        local rIcon = frame:CreateTexture(nil, "ARTWORK")
+        rIcon:SetSize(ICON_SIZE * 0.8, ICON_SIZE * 0.8)
+        if not prevRoleIcon then
+            rIcon:SetPoint("TOPLEFT", frame, "TOPLEFT", 10, 0)
+        else
+            rIcon:SetPoint("LEFT", prevRoleIcon, "RIGHT", 6, 0)
+        end
+        rIcon:SetTexture(roleData.texture)
+        rIcon:SetTexCoord(unpack(roleData.texCoord))
+        prevRoleIcon = rIcon
+    end
+
+    -- 2. Спек строка 1: Combat Curio
+    local combatIcon = frame:CreateTexture(nil, "ARTWORK")
+    combatIcon:SetSize(ICON_SIZE, ICON_SIZE)
+    combatIcon:SetPoint("TOPLEFT", frame, "TOPLEFT", 10, -ICON_SIZE)
+    combatIcon:SetTexture(GetItemIcon(data.combatCurio.itemID))
+
+    local combatText = frame:CreateFontString(nil, "OVERLAY")
+    combatText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE")
+    combatText:SetTextColor(0.976, 1, 0, 1)
+    combatText:SetPoint("LEFT", combatIcon, "RIGHT", 8, 0)
+    combatText:SetText("Combat: " .. data.combatCurio.name)
+
+    local combatCount = frame:CreateFontString(nil, "OVERLAY")
+    combatCount:SetFont("Fonts\\FRIZQT__.TTF", 20)
+    combatCount:SetTextColor(1, 1, 1, 1)
+    combatCount:SetPoint("LEFT", combatText, "RIGHT", 6, 0)
+
+    -- 3. Спек строка 2: Utility Curio
+    local utilityIcon = frame:CreateTexture(nil, "ARTWORK")
+    utilityIcon:SetSize(ICON_SIZE, ICON_SIZE)
+    utilityIcon:SetPoint("TOPLEFT", combatIcon, "BOTTOMLEFT", 0, -8)
+    utilityIcon:SetTexture(GetItemIcon(data.utilityCurio.itemID))
+
+    local utilityText = frame:CreateFontString(nil, "OVERLAY")
+    utilityText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE")
+    utilityText:SetTextColor(0, 1, 0.804, 1)
+    utilityText:SetPoint("LEFT", utilityIcon, "RIGHT", 8, 0)
+    utilityText:SetText("Utility: " .. data.utilityCurio.name)
+
+    local utilityCount = frame:CreateFontString(nil, "OVERLAY")
+    utilityCount:SetFont("Fonts\\FRIZQT__.TTF", 20)
+    utilityCount:SetTextColor(1, 1, 1, 1)
+    utilityCount:SetPoint("LEFT", utilityText, "RIGHT", 6, 0)
+
+    -- 4. Спек строка 3: Curio Toxin
+    local toxinIcon = frame:CreateTexture(nil, "ARTWORK")
+    toxinIcon:SetSize(ICON_SIZE, ICON_SIZE)
+    toxinIcon:SetPoint("TOPLEFT", utilityIcon, "BOTTOMLEFT", 0, -8)
+    
+    local spellInfo = C_Spell and C_Spell.GetSpellInfo and C_Spell.GetSpellInfo(data.curioToxin.spellID)
+    local toxinTexture = spellInfo and spellInfo.iconID or 136068
+    toxinIcon:SetTexture(toxinTexture)
+
+    local toxinText = frame:CreateFontString(nil, "OVERLAY")
+    toxinText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE")
+    toxinText:SetTextColor(0.6, 1, 0.2, 1)
+    toxinText:SetPoint("LEFT", toxinIcon, "RIGHT", 8, 0)
+    toxinText:SetText("Toxin: " .. data.curioToxin.name)
+
+    local toxinCount = frame:CreateFontString(nil, "OVERLAY")
+    toxinCount:SetFont("Fonts\\FRIZQT__.TTF", 20)
+    toxinCount:SetTextColor(1, 1, 1, 1)
+    toxinCount:SetPoint("LEFT", toxinText, "RIGHT", 6, 0)
+
+    frame.combatCount   = combatCount
+    frame.utilityCount  = utilityCount
+    frame.toxinCount    = toxinCount
+    frame.combatItemID  = data.combatCurio.itemID
+    frame.utilityItemID = data.utilityCurio.itemID
+    frame.toxinSpellID  = data.curioToxin.spellID
+
+    return frame
+end
+
 local function UpdateItemCounts(frame)
     if not frame then return end
-    local combatCount  = GetItemCount(frame.combatItemID,  false) or 0
-    local utilityCount = GetItemCount(frame.utilityItemID, false) or 0
-    frame.combatCount:SetText(combatCount > 0 and tostring(combatCount) or "")
-    frame.utilityCount:SetText(utilityCount > 0 and tostring(utilityCount) or "")
+    if frame.combatItemID then
+        local combatCount = GetItemCount(frame.combatItemID, false) or 0
+        frame.combatCount:SetText(combatCount > 0 and tostring(combatCount) or "")
+    end
+    if frame.utilityItemID then
+        local utilityCount = GetItemCount(frame.utilityItemID, false) or 0
+        frame.utilityCount:SetText(utilityCount > 0 and tostring(utilityCount) or "")
+    end
+    if frame.toxinSpellID and frame.toxinCount then
+        local toxinCount = GetItemCount(frame.toxinSpellID, false) or 0
+        frame.toxinCount:SetText(toxinCount > 0 and tostring(toxinCount) or "")
+    end
 end
 
 -- ==================== Main Frame ====================
@@ -172,7 +244,6 @@ local function CreateMainFrame()
     f:RegisterForDrag("LeftButton")
     f:Hide()
 
-    -- Load saved position or use default
     if DelveCurioReminderDB and DelveCurioReminderDB.mainFrame then
         f:SetPoint(
             DelveCurioReminderDB.mainFrame.point or "CENTER",
@@ -208,7 +279,6 @@ end
 local function RefreshRoleFrames()
     if not addon.mainFrame then return end
 
-    -- Clear old frames
     if addon.roleFrames then
         for _, frm in pairs(addon.roleFrames) do
             frm:Hide()
@@ -216,18 +286,27 @@ local function RefreshRoleFrames()
         end
     end
 
+    local companion = GetCurrentCompanionName()
     local data = GetCurioDataForCompanion()
-    if not data then
+    if not data or not companion then
         addon.mainFrame:Hide()
         return
     end
 
     addon.roleFrames = {}
-    for role, curio in pairs(data) do
-        local frm = CreateRoleFrame(addon.mainFrame, role, curio)
-        addon.roleFrames[role] = frm
+
+    if companion == "Valeera" then
+        local frm = CreateValeeraFrame(addon.mainFrame, data)
+        addon.roleFrames["Valeera"] = frm
         UpdateItemCounts(frm)
         frm:Show()
+    else
+        for role, curio in pairs(data) do
+            local frm = CreateRoleFrame(addon.mainFrame, role, curio)
+            addon.roleFrames[role] = frm
+            UpdateItemCounts(frm)
+            frm:Show()
+        end
     end
 end
 
@@ -248,7 +327,6 @@ local function OnEvent(self, event, arg1)
         if not DelveCurioReminderDB then DelveCurioReminderDB = {} end
         addon.mainFrame = CreateMainFrame()
 
-        -- Load timeout setting
         addon.mainFrame.timeoutEnabled = DelveCurioReminderDB.timeoutEnabled ~= false
 
         local function HookCompanionFrame()
@@ -277,7 +355,7 @@ local function OnEvent(self, event, arg1)
         end
 
     elseif event == "ADDON_LOADED" and arg1 == "Blizzard_DelvesCompanionConfiguration" then
-        local function HookCompanionFrame() -- redefined locally to avoid global leak
+        local function HookCompanionFrame()
             if not DelvesCompanionConfigurationFrame then return end
             DelvesCompanionConfigurationFrame:HookScript("OnShow", function()
                 RefreshRoleFrames()
