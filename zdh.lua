@@ -85,6 +85,7 @@ local DelvesBountifulList = {
         ["Eversong Woods"] = { uiMapID = 2395, delves = {{id = 8438, name = "Shadow Enclave"}} },
         ["Silvermoon City"] = { uiMapID = 2393, delves = {{id = 8426, name = "Collegiate Calamity"}, {id = 8440, name = "The Darkway"}} },
         ["Isle of Quel'Danas"] = { uiMapID = 2424, delves = {{id = 8428, name = "Parhelion Plaza"}} },
+		["The Coiled Isle"] = { uiMapID = 2512, delves = {{id = 8763, name = "The Ring of Glory"}, {id = 8760, name = "Gnarldor Isle"}} },
     }
 }
 
@@ -127,6 +128,7 @@ function DelvesBountifulList:LayoutText()
         ["Shadow Enclave"] = true,
         ["Collegiate Calamity"] = true, ["The Darkway"] = true,
         ["Parhelion Plaza"] = true,
+		["The Ring of Glory"] = true, ["Gnarldor Isle"] = true,
     }
 
     for zoneName, zoneData in pairs(self.Zones) do
