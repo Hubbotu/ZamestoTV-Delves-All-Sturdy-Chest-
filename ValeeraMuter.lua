@@ -1,6 +1,7 @@
 local addonName, addon = "ValeeraMuter", {}
 _G[addonName] = addon
 
+-- Registry of audio assets stored as hash map keys
 local audioRegistry = {
     [7243762] = true, [7243934] = true, [7329273] = true, [7430043] = true, [7430047] = true,
     [7430050] = true, [7430053] = true, [7430056] = true, [7430059] = true, [7430063] = true,
@@ -34,6 +35,7 @@ local audioRegistry = {
     [7431115] = true, [7431119] = true, [7431123] = true, [7440991] = true, [7461759] = true
 }
 
+-- Execute audio state change across registered IDs
 function addon:ToggleAudioMute(state)
     local handler = state and MuteSoundFile or UnmuteSoundFile
     for fileID in pairs(audioRegistry) do
@@ -41,6 +43,7 @@ function addon:ToggleAudioMute(state)
     end
 end
 
+-- Inspect active companion identity
 function addon:IsValeeraPresent()
     local frame = _G["DelvesCompanionConfigurationFrame"]
     if not frame or not frame.CompanionInfoFrame then return false end
@@ -58,42 +61,33 @@ function addon:IsValeeraPresent()
     return false
 end
 
+-- Check if sender is Valeera Sanguinar
 local function IsValeeraSender(sender)
     if not sender then return false end
     return sender:find("Valeera Sanguinar") or sender:find("Валира")
 end
 
-local function SuppressWorldChatBubbles(targetMsg)
-    C_Timer.After(0.01, function()
-        local children = { WorldFrame:GetChildren() }
-        for _, frame in ipairs(children) do
-            if frame:IsShown() and not frame:IsForbidden() then
-                -- Modern chat bubble detection
-                local isBubble = frame.String or frame:GetName() == nil
-                if isBubble then
-                    for _, region in ipairs({ frame:GetRegions() }) do
-                        if region:IsObjectType("FontString") then
-                            local text = region:GetText()
-                            if text and (text == targetMsg or text:find("Valeera") or text:find("Валира")) then
-                                frame:Hide()
-                                frame:SetAlpha(0)
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end)
+-- Temporarily suppress chat bubbles globally upon Valeera message
+local function SuppressBubblesTemporarily()
+    if C_CVar and C_CVar.GetCVar and C_CVar.SetCVar then
+        local originalState = C_CVar.GetCVar("chatBubbles")
+        C_CVar.SetCVar("chatBubbles", "0")
+        C_Timer.After(0.2, function()
+            C_CVar.SetCVar("chatBubbles", originalState or "1")
+        end)
+    end
 end
 
+-- Filter Chat Messages and disable bubble creation
 local function ChatMessageFilter(self, event, msg, sender, ...)
     if ValeeraMuterDB and ValeeraMuterDB.isMuted and IsValeeraSender(sender) then
-        SuppressWorldChatBubbles(msg)
-        return true
+        SuppressBubblesTemporarily()
+        return true -- Block message in chat frame
     end
     return false, msg, sender, ...
 end
 
+-- Register Chat Filters
 ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_SAY", ChatMessageFilter)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_YELL", ChatMessageFilter)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_EMOTE", ChatMessageFilter)
@@ -101,6 +95,7 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_PARTY", ChatMessageFilter)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_BOSS_EMOTE", ChatMessageFilter)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_BOSS_WHISPER", ChatMessageFilter)
 
+-- Hook Talking Head Frame to hide it when Valeera speaks
 local function HookTalkingHead()
     if TalkingHeadFrame_PlayCurrent and not addon.talkingHeadHooked then
         hooksecurefunc("TalkingHeadFrame_PlayCurrent", function()
@@ -118,6 +113,7 @@ local function HookTalkingHead()
     end
 end
 
+-- Synchronize button state and colors
 function addon:UpdateInterfaceState()
     if not self.toggleBtn then return end
     local isMuted = ValeeraMuterDB and ValeeraMuterDB.isMuted
@@ -127,6 +123,7 @@ function addon:UpdateInterfaceState()
     end
 end
 
+-- Construct trigger control
 function addon:BuildToggleButton()
     if self.toggleBtn or not DelvesCompanionConfigurationFrame then return end
 
@@ -145,6 +142,7 @@ function addon:BuildToggleButton()
     self:UpdateInterfaceState()
 end
 
+-- Handle companion interface display logic
 function addon:OnCompanionFrameShown()
     if self:IsValeeraPresent() then
         self:BuildToggleButton()
@@ -154,6 +152,7 @@ function addon:OnCompanionFrameShown()
     end
 end
 
+-- Register interface hooks
 function addon:BindFrameHooks()
     if not DelvesCompanionConfigurationFrame or self.hooked then return end
     DelvesCompanionConfigurationFrame:HookScript("OnShow", function()
@@ -165,6 +164,7 @@ function addon:BindFrameHooks()
     self.hooked = true
 end
 
+-- Primary event listener
 local eventDispatcher = CreateFrame("Frame")
 eventDispatcher:RegisterEvent("PLAYER_LOGIN")
 eventDispatcher:RegisterEvent("ADDON_LOADED")
