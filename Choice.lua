@@ -27,29 +27,69 @@ local function FormatAbility(name)
     return name
 end
 
-local guideFrame = CreateFrame("Frame", "PlayerChoiceGuideFrame", UIParent, "BasicFrameTemplateWithInset")
-guideFrame:SetSize(520, 440)
-guideFrame:SetFrameStrata("DIALOG")
-guideFrame:Hide()
+local guideFrame = nil
+local toggleButton = nil
 
-guideFrame.title = guideFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-guideFrame.title:SetPoint("CENTER", guideFrame.TitleBg, "CENTER", 0, 0)
-guideFrame.title:SetText("Optimal Combinations & Specialization Tips")
+local function IsCorrosiveCodexOpen(choiceFrame)
+    if not choiceFrame or not choiceFrame:IsShown() then return false end
+    
+    local titleText = ""
+    if choiceFrame.Title and choiceFrame.Title.Text then
+        titleText = choiceFrame.Title.Text:GetText() or ""
+    elseif choiceFrame.TitleText then
+        titleText = choiceFrame.TitleText:GetText() or ""
+    end
 
-local scrollFrame = CreateFrame("ScrollFrame", nil, guideFrame, "UIPanelScrollFrameTemplate")
-scrollFrame:SetPoint("TOPLEFT", guideFrame.InsetBg, "TOPLEFT", 8, -8)
-scrollFrame:SetPoint("BOTTOMRIGHT", guideFrame.InsetBg, "BOTTOMRIGHT", -28, 8)
+    if titleText:find("Corrosive Codex") or titleText:find("Codex") then
+        return true
+    end
 
-local content = CreateFrame("Frame", nil, scrollFrame)
-content:SetSize(470, 620)
-scrollFrame:SetScrollChild(content)
+    return false
+end
 
-local text = content:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-text:SetPoint("TOPLEFT", content, "TOPLEFT", 5, -5)
-text:SetJustifyH("LEFT")
-text:SetWidth(460)
+local function SetupGuideUI(parent)
+    if parent ~= _G.PlayerChoiceFrame then return end
 
-local guideText = string.format([[
+    if not toggleButton then
+        -- 1. Создание кнопки
+        toggleButton = CreateFrame("Button", "PlayerChoiceGuideButton", parent, "UIPanelButtonTemplate")
+        toggleButton:SetSize(90, 22)
+        toggleButton:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -45, -12)
+        
+        local btnText = toggleButton:GetFontString() or toggleButton:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        btnText:SetFontObject("GameFontHighlightSmall")
+        btnText:SetText("Guide")
+        btnText:SetTextColor(1, 0.82, 0, 1)
+        toggleButton:SetFontString(btnText)
+
+        toggleButton:SetFrameStrata("HIGH")
+        toggleButton:SetFrameLevel(parent:GetFrameLevel() + 25)
+
+        guideFrame = CreateFrame("Frame", "PlayerChoiceGuideFrame", parent, "BasicFrameTemplateWithInset")
+        guideFrame:SetSize(520, 440)
+        guideFrame:SetPoint("TOPLEFT", parent, "TOPRIGHT", 15, 0)
+        guideFrame:SetFrameStrata("HIGH")
+        guideFrame:SetFrameLevel(parent:GetFrameLevel() + 25)
+        guideFrame:Hide()
+
+        guideFrame.title = guideFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+        guideFrame.title:SetPoint("CENTER", guideFrame.TitleBg, "CENTER", 0, 0)
+        guideFrame.title:SetText("Optimal Combinations & Specialization Tips")
+
+        local scrollFrame = CreateFrame("ScrollFrame", nil, guideFrame, "UIPanelScrollFrameTemplate")
+        scrollFrame:SetPoint("TOPLEFT", guideFrame.InsetBg, "TOPLEFT", 8, -8)
+        scrollFrame:SetPoint("BOTTOMRIGHT", guideFrame.InsetBg, "BOTTOMRIGHT", -28, 8)
+
+        local content = CreateFrame("Frame", nil, scrollFrame)
+        content:SetSize(470, 620)
+        scrollFrame:SetScrollChild(content)
+
+        local text = content:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        text:SetPoint("TOPLEFT", content, "TOPLEFT", 5, -5)
+        text:SetJustifyH("LEFT")
+        text:SetWidth(460)
+
+        local guideText = string.format([[
 |cffffd200=== RECOMMENDED PAIRINGS (2-SLOT LOADOUTS) ===|r
 
 |cff00ff00Open World & Trash Mobs:|r
@@ -87,55 +127,53 @@ Opt for %s + %s for mass AoE, or %s + %s for single-target focus. Use %s to bund
 %s |cff00ccffRanged & Caster DPS:|r
 Mirror the Melee DPS setups. Pairing %s with any poison applicator guarantees stable, long-term damage escalation.
 ]], 
-    FormatAbility("Plague of Corrosion"), FormatAbility("Ophidian Maw"),
-    FormatAbility("Ula'tek's Gift"), FormatAbility("Insidious Venom"),
-    FormatAbility("Virulent Mucus"), FormatAbility("Gorgoneion Gaze"),
-    FormatAbility("Viperine Grasp"), FormatAbility("Ophidian Maw"),
-    FormatAbility("Ouroboric Cycle"), FormatAbility("Plague of Corrosion"), FormatAbility("Accursed Poison"),
-    
-    ROLE_ICONS.HEALER, FormatAbility("Virulent Mucus"), FormatAbility("Gorgoneion Gaze"), FormatAbility("Lithic Plumage"), FormatAbility("Miasma Geyser"), FormatAbility("Ula'tek's Gift"), FormatAbility("Insidious Venom"), FormatAbility("Plague of Corrosion"), FormatAbility("Ophidian Maw"),
-    ROLE_ICONS.TANK, FormatAbility("Virulent Mucus"), FormatAbility("Gorgoneion Gaze"), FormatAbility("Ophidian Maw"), FormatAbility("Viperine Grasp"),
-    ROLE_ICONS.DAMAGER, FormatAbility("Plague of Corrosion"), FormatAbility("Ophidian Maw"), FormatAbility("Ula'tek's Gift"), FormatAbility("Insidious Venom"), FormatAbility("Viperine Grasp"),
-    ROLE_ICONS.DAMAGER, FormatAbility("Ouroboric Cycle")
-)
+            FormatAbility("Plague of Corrosion"), FormatAbility("Ophidian Maw"),
+            FormatAbility("Ula'tek's Gift"), FormatAbility("Insidious Venom"),
+            FormatAbility("Virulent Mucus"), FormatAbility("Gorgoneion Gaze"),
+            FormatAbility("Viperine Grasp"), FormatAbility("Ophidian Maw"),
+            FormatAbility("Ouroboric Cycle"), FormatAbility("Plague of Corrosion"), FormatAbility("Accursed Poison"),
+            
+            ROLE_ICONS.HEALER, FormatAbility("Virulent Mucus"), FormatAbility("Gorgoneion Gaze"), FormatAbility("Lithic Plumage"), FormatAbility("Miasma Geyser"), FormatAbility("Ula'tek's Gift"), FormatAbility("Insidious Venom"), FormatAbility("Plague of Corrosion"), FormatAbility("Ophidian Maw"),
+            ROLE_ICONS.TANK, FormatAbility("Virulent Mucus"), FormatAbility("Gorgoneion Gaze"), FormatAbility("Ophidian Maw"), FormatAbility("Viperine Grasp"),
+            ROLE_ICONS.DAMAGER, FormatAbility("Plague of Corrosion"), FormatAbility("Ophidian Maw"), FormatAbility("Ula'tek's Gift"), FormatAbility("Insidious Venom"), FormatAbility("Viperine Grasp"),
+            ROLE_ICONS.DAMAGER, FormatAbility("Ouroboric Cycle")
+        )
 
-text:SetText(guideText)
+        text:SetText(guideText)
 
-local toggleButton = CreateFrame("Button", "PlayerChoiceGuideButton", UIParent, "UIPanelButtonTemplate")
-toggleButton:SetSize(80, 24)
-toggleButton:SetText("Guide")
-toggleButton:SetFrameStrata("DIALOG")
-toggleButton:Hide()
-
-toggleButton:SetScript("OnClick", function()
-    local parentFrame = _G["PlayerChoiceFrame"]
-    if guideFrame:IsShown() then
-        guideFrame:Hide()
-    elseif parentFrame then
-        guideFrame:ClearAllPoints()
-        guideFrame:SetPoint("LEFT", parentFrame, "RIGHT", 10, 0)
-        guideFrame:Show()
-    end
-end)
-
-local eventHandler = CreateFrame("Frame")
-eventHandler:RegisterEvent("PLAYER_CHOICE_UPDATE")
-
-eventHandler:SetScript("OnEvent", function(self, event)
-    local choiceFrame = _G["PlayerChoiceFrame"]
-    
-    if choiceFrame and choiceFrame:IsShown() then
-        toggleButton:SetParent(choiceFrame)
-        toggleButton:ClearAllPoints()
-        toggleButton:SetPoint("TOPRIGHT", choiceFrame, "TOPRIGHT", -45, -15)
-        toggleButton:Show()
-
-        if not choiceFrame.guideHooked then
-            choiceFrame:HookScript("OnHide", function()
-                toggleButton:Hide()
+        toggleButton:SetScript("OnClick", function()
+            if guideFrame:IsShown() then
                 guideFrame:Hide()
-            end)
-            choiceFrame.guideHooked = true
+            else
+                guideFrame:Show()
+            end
+        end)
+
+        parent:HookScript("OnHide", function()
+            if guideFrame then guideFrame:Hide() end
+            if toggleButton then toggleButton:Hide() end
+        end)
+    end
+end
+
+local monitor = CreateFrame("Frame")
+monitor:RegisterEvent("PLAYER_LOGIN")
+monitor:RegisterEvent("PLAYER_CHOICE_UPDATE")
+monitor:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+monitor:SetScript("OnEvent", function()
+    local choiceFrame = _G.PlayerChoiceFrame
+
+    if not choiceFrame then return end
+
+    SetupGuideUI(choiceFrame)
+
+    if toggleButton then
+        if IsCorrosiveCodexOpen(choiceFrame) then
+            toggleButton:Show()
+        else
+            toggleButton:Hide()
+            if guideFrame then guideFrame:Hide() end
         end
     end
 end)
