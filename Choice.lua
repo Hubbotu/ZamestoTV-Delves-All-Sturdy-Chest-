@@ -1,20 +1,18 @@
--- Таблица соответствия ключей и Spell ID
 local SPELLS = {
-    OPHIDIAN_MAW        = 1218128, -- Замените при необходимости на правильные Spell ID из БД
-    PLAGUE_OF_CORROSION = 1218129,
-    ULATEKS_GIFT        = 1218130,
-    MIASMA_GEYSER       = 1218131,
-    VIRULENT_MUCUS      = 1218132,
-    LITHIC_PLUMAGE      = 1218133,
-    GORGONEION_GAZE     = 1218134,
-    ACCURSED_POISON     = 1218135,
-    VIPERINE_GRASP      = 1218136,
-    MEPHITIC_CLOUD      = 1218137,
-    OUROBORIC_CYCLE     = 1218138,
-    INSIDIOUS_VENOM     = 1218139,
+    OPHIDIAN_MAW        = 1303472,
+    PLAGUE_OF_CORROSION = 1303475,
+    ULATEKS_GIFT        = 1303477,
+    MIASMA_GEYSER       = 1303476,
+    VIRULENT_MUCUS      = 1303473,
+    LITHIC_PLUMAGE      = 1303467,
+    GORGONEION_GAZE     = 1303469,
+    ACCURSED_POISON     = 1303474,
+    VIPERINE_GRASP      = 1303471,
+    MEPHITIC_CLOUD      = 1303470,
+    OUROBORIC_CYCLE     = 1303468,
+    INSIDIOUS_VENOM     = 1303478,
 }
 
--- Статические ID иконок как запасной вариант (если у заклинания нет своей иконки)
 local FALLBACK_ICONS = {
     [SPELLS.OPHIDIAN_MAW]        = 7966624,
     [SPELLS.PLAGUE_OF_CORROSION] = 840941,
@@ -36,7 +34,6 @@ local ROLE_ICONS = {
     DAMAGER= "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:22:41|t",
 }
 
--- Локализованные названия Corrosive Codex для всех языков
 local CODEX_TITLES = {
     "Corrosive Codex",     -- Английский
     "Разъедающий кодекс",  -- Русский
@@ -65,7 +62,7 @@ local function FormatAbility(spellID)
             spellName = spellInfo.name or ""
             iconID = spellInfo.iconID or iconID
         end
-    elseif GetSpellInfo then -- Резервная проверка для старых версий API
+    elseif GetSpellInfo then
         spellName, _, iconID = GetSpellInfo(spellID)
     end
 
@@ -97,14 +94,12 @@ local function IsCorrosiveCodexOpen(choiceFrame)
         titleText = choiceFrame.TitleText:GetText() or ""
     end
 
-    -- 1. Проверка по точным локализованным названиям
     for _, codexTitle in ipairs(CODEX_TITLES) do
         if titleText:find(codexTitle, 1, true) then
             return true
         end
     end
 
-    -- 2. Запасная проверка по подстроке
     if titleText:find("Codex") or titleText:find("Kodex") or titleText:find("Códice") or titleText:find("Codice") or titleText:find("Кодекс") then
         return true
     end
@@ -116,7 +111,6 @@ local function SetupGuideUI(parent)
     if parent ~= _G.PlayerChoiceFrame then return end
 
     if not toggleButton then
-        -- 1. Создание кнопки
         toggleButton = CreateFrame("Button", "PlayerChoiceGuideButton", parent, "UIPanelButtonTemplate")
         toggleButton:SetSize(90, 22)
         toggleButton:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -45, -12)
@@ -130,7 +124,6 @@ local function SetupGuideUI(parent)
         toggleButton:SetFrameStrata("HIGH")
         toggleButton:SetFrameLevel(parent:GetFrameLevel() + 25)
 
-        -- 2. Создание фрейма руководства
         guideFrame = CreateFrame("Frame", "PlayerChoiceGuideFrame", parent, "BasicFrameTemplateWithInset")
         guideFrame:SetSize(520, 440)
         guideFrame:SetPoint("TOPLEFT", parent, "TOPRIGHT", 15, 0)
