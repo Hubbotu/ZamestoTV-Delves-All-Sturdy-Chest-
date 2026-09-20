@@ -1,16 +1,33 @@
-local ICONS = {
-    ["Ophidian Maw"]        = 7966624,
-    ["Plague of Corrosion"] = 840941,
-    ["Ula'tek's Gift"]      = 840189,
-    ["Miasma Geyser"]       = 840191,
-    ["Virulent Mucus"]      = 7956747,
-    ["Lithic Plumage"]      = 2103798,
-    ["Gorgoneion Gaze"]     = 7956734,
-    ["Accursed Poison"]     = 1323036,
-    ["Viperine Grasp"]      = 7956742,
-    ["Mephitic Cloud"]      = 5764921,
-    ["Ouroboric Cycle"]     = 636337,
-    ["Insidious Venom"]     = 5764919,
+-- Таблица соответствия ключей и Spell ID
+local SPELLS = {
+    OPHIDIAN_MAW        = 1218128, -- Замените при необходимости на правильные Spell ID из БД
+    PLAGUE_OF_CORROSION = 1218129,
+    ULATEKS_GIFT        = 1218130,
+    MIASMA_GEYSER       = 1218131,
+    VIRULENT_MUCUS      = 1218132,
+    LITHIC_PLUMAGE      = 1218133,
+    GORGONEION_GAZE     = 1218134,
+    ACCURSED_POISON     = 1218135,
+    VIPERINE_GRASP      = 1218136,
+    MEPHITIC_CLOUD      = 1218137,
+    OUROBORIC_CYCLE     = 1218138,
+    INSIDIOUS_VENOM     = 1218139,
+}
+
+-- Статические ID иконок как запасной вариант (если у заклинания нет своей иконки)
+local FALLBACK_ICONS = {
+    [SPELLS.OPHIDIAN_MAW]        = 7966624,
+    [SPELLS.PLAGUE_OF_CORROSION] = 840941,
+    [SPELLS.ULATEKS_GIFT]        = 840189,
+    [SPELLS.MIASMA_GEYSER]       = 840191,
+    [SPELLS.VIRULENT_MUCUS]      = 7956747,
+    [SPELLS.LITHIC_PLUMAGE]      = 2103798,
+    [SPELLS.GORGONEION_GAZE]     = 7956734,
+    [SPELLS.ACCURSED_POISON]     = 1323036,
+    [SPELLS.VIPERINE_GRASP]      = 7956742,
+    [SPELLS.MEPHITIC_CLOUD]      = 5764921,
+    [SPELLS.OUROBORIC_CYCLE]     = 636337,
+    [SPELLS.INSIDIOUS_VENOM]     = 5764919,
 }
 
 local ROLE_ICONS = {
@@ -19,12 +36,52 @@ local ROLE_ICONS = {
     DAMAGER= "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:22:41|t",
 }
 
-local function FormatAbility(name)
-    local iconID = ICONS[name]
-    if iconID then
-        return string.format("|T%d:16:16:0:0|t %s", iconID, name)
+-- Локализованные названия Corrosive Codex для всех языков
+local CODEX_TITLES = {
+    "Corrosive Codex",     -- Английский
+    "Разъедающий кодекс",  -- Русский
+    "Ätzender Kodex",      -- Немецкий
+    "Códice corrosivo",    -- Испанский
+    "Codex corrosif",      -- Французский
+    "Codice Corrosivo",    -- Итальянский
+    "Códice Corrosivo",    -- Португальский
+}
+
+local spellCache = {}
+
+local function FormatAbility(spellID)
+    if not spellID then return "" end
+
+    if spellCache[spellID] then
+        return spellCache[spellID]
     end
-    return name
+
+    local spellName = ""
+    local iconID = FALLBACK_ICONS[spellID]
+
+    if C_Spell and C_Spell.GetSpellInfo then
+        local spellInfo = C_Spell.GetSpellInfo(spellID)
+        if spellInfo then
+            spellName = spellInfo.name or ""
+            iconID = spellInfo.iconID or iconID
+        end
+    elseif GetSpellInfo then -- Резервная проверка для старых версий API
+        spellName, _, iconID = GetSpellInfo(spellID)
+    end
+
+    if spellName == "" then
+        spellName = "Spell #" .. tostring(spellID)
+    end
+
+    local formatted = ""
+    if iconID then
+        formatted = string.format("|T%d:16:16:0:0|t %s", iconID, spellName)
+    else
+        formatted = spellName
+    end
+
+    spellCache[spellID] = formatted
+    return formatted
 end
 
 local guideFrame = nil
@@ -40,7 +97,15 @@ local function IsCorrosiveCodexOpen(choiceFrame)
         titleText = choiceFrame.TitleText:GetText() or ""
     end
 
-    if titleText:find("Corrosive Codex") or titleText:find("Codex") then
+    -- 1. Проверка по точным локализованным названиям
+    for _, codexTitle in ipairs(CODEX_TITLES) do
+        if titleText:find(codexTitle, 1, true) then
+            return true
+        end
+    end
+
+    -- 2. Запасная проверка по подстроке
+    if titleText:find("Codex") or titleText:find("Kodex") or titleText:find("Códice") or titleText:find("Codice") or titleText:find("Кодекс") then
         return true
     end
 
@@ -65,6 +130,7 @@ local function SetupGuideUI(parent)
         toggleButton:SetFrameStrata("HIGH")
         toggleButton:SetFrameLevel(parent:GetFrameLevel() + 25)
 
+        -- 2. Создание фрейма руководства
         guideFrame = CreateFrame("Frame", "PlayerChoiceGuideFrame", parent, "BasicFrameTemplateWithInset")
         guideFrame:SetSize(520, 440)
         guideFrame:SetPoint("TOPLEFT", parent, "TOPRIGHT", 15, 0)
@@ -127,16 +193,16 @@ Opt for %s + %s for mass AoE, or %s + %s for single-target focus. Use %s to bund
 %s |cff00ccffRanged & Caster DPS:|r
 Mirror the Melee DPS setups. Pairing %s with any poison applicator guarantees stable, long-term damage escalation.
 ]], 
-            FormatAbility("Plague of Corrosion"), FormatAbility("Ophidian Maw"),
-            FormatAbility("Ula'tek's Gift"), FormatAbility("Insidious Venom"),
-            FormatAbility("Virulent Mucus"), FormatAbility("Gorgoneion Gaze"),
-            FormatAbility("Viperine Grasp"), FormatAbility("Ophidian Maw"),
-            FormatAbility("Ouroboric Cycle"), FormatAbility("Plague of Corrosion"), FormatAbility("Accursed Poison"),
+            FormatAbility(SPELLS.PLAGUE_OF_CORROSION), FormatAbility(SPELLS.OPHIDIAN_MAW),
+            FormatAbility(SPELLS.ULATEKS_GIFT), FormatAbility(SPELLS.INSIDIOUS_VENOM),
+            FormatAbility(SPELLS.VIRULENT_MUCUS), FormatAbility(SPELLS.GORGONEION_GAZE),
+            FormatAbility(SPELLS.VIPERINE_GRASP), FormatAbility(SPELLS.OPHIDIAN_MAW),
+            FormatAbility(SPELLS.OUROBORIC_CYCLE), FormatAbility(SPELLS.PLAGUE_OF_CORROSION), FormatAbility(SPELLS.ACCURSED_POISON),
             
-            ROLE_ICONS.HEALER, FormatAbility("Virulent Mucus"), FormatAbility("Gorgoneion Gaze"), FormatAbility("Lithic Plumage"), FormatAbility("Miasma Geyser"), FormatAbility("Ula'tek's Gift"), FormatAbility("Insidious Venom"), FormatAbility("Plague of Corrosion"), FormatAbility("Ophidian Maw"),
-            ROLE_ICONS.TANK, FormatAbility("Virulent Mucus"), FormatAbility("Gorgoneion Gaze"), FormatAbility("Ophidian Maw"), FormatAbility("Viperine Grasp"),
-            ROLE_ICONS.DAMAGER, FormatAbility("Plague of Corrosion"), FormatAbility("Ophidian Maw"), FormatAbility("Ula'tek's Gift"), FormatAbility("Insidious Venom"), FormatAbility("Viperine Grasp"),
-            ROLE_ICONS.DAMAGER, FormatAbility("Ouroboric Cycle")
+            ROLE_ICONS.HEALER, FormatAbility(SPELLS.VIRULENT_MUCUS), FormatAbility(SPELLS.GORGONEION_GAZE), FormatAbility(SPELLS.LITHIC_PLUMAGE), FormatAbility(SPELLS.MIASMA_GEYSER), FormatAbility(SPELLS.ULATEKS_GIFT), FormatAbility(SPELLS.INSIDIOUS_VENOM), FormatAbility(SPELLS.PLAGUE_OF_CORROSION), FormatAbility(SPELLS.OPHIDIAN_MAW),
+            ROLE_ICONS.TANK, FormatAbility(SPELLS.VIRULENT_MUCUS), FormatAbility(SPELLS.GORGONEION_GAZE), FormatAbility(SPELLS.OPHIDIAN_MAW), FormatAbility(SPELLS.VIPERINE_GRASP),
+            ROLE_ICONS.DAMAGER, FormatAbility(SPELLS.PLAGUE_OF_CORROSION), FormatAbility(SPELLS.OPHIDIAN_MAW), FormatAbility(SPELLS.ULATEKS_GIFT), FormatAbility(SPELLS.INSIDIOUS_VENOM), FormatAbility(SPELLS.VIPERINE_GRASP),
+            ROLE_ICONS.DAMAGER, FormatAbility(SPELLS.OUROBORIC_CYCLE)
         )
 
         text:SetText(guideText)
