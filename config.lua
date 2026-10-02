@@ -5,9 +5,9 @@ ns.defaults = {
     profile = {
         show_on_world = true,
         show_on_minimap = true,
-        show_Zamro = true,
+        show_ZamestoTV_Remix = true,
         repeatable = true,
-        icon_scale = 1.0,
+        icon_scale = 0.6,
         icon_alpha = 1.0,
     },
     char = {
@@ -16,38 +16,6 @@ ns.defaults = {
         },
     },
 }
-
-local gwaProfileExportText = ""
-local gwaProfileImportText = ""
-local gwaProfileStatusText = ""
-
-local function EnsureGWASavedVars()
-    local codec = _G.GWA_ProfileCodec
-    if codec and codec.EnsureSavedVars then
-        GWA_SavedVars = codec.EnsureSavedVars(GWA_SavedVars)
-    else
-        GWA_SavedVars = GWA_SavedVars or { framesVisible = true, positions = {} }
-        GWA_SavedVars.positions = GWA_SavedVars.positions or {}
-    end
-    return GWA_SavedVars
-end
-
-local function BuildGWAProfileString()
-    local codec = _G.GWA_ProfileCodec
-    local vars = EnsureGWASavedVars()
-    if codec and codec.BuildProfileString then
-        return codec.BuildProfileString(vars)
-    end
-    return ""
-end
-
-local function ImportGWAProfileString(data)
-    local codec = _G.GWA_ProfileCodec
-    if not (codec and codec.ImportProfileString) then
-        return false, "Profile codec is not loaded."
-    end
-    return codec.ImportProfileString(data, EnsureGWASavedVars())
-end
 
 ns.options = {
     type = "group",
@@ -101,10 +69,10 @@ ns.options = {
             name = L["What to display"],
             inline = true,
             args = {
-                show_Zamro = {
+                show_ZamestoTV_Remix = {
                     type = "toggle",
                     name = L["Show Zamros"],
-                    desc = L["Show Zamros gold"],
+                    desc = L["Show Zamros Delves"],
                     order = 20,
                 },
                 unhide = {
@@ -121,99 +89,42 @@ ns.options = {
                 },
             },
         },
-        gwa_profile = {
-            type = "group",
-            name = "Great Vault Overlay Profile",
-            inline = true,
-            order = 100,
-            args = {
-                info = {
-                    type = "description",
-                    order = 1,
-                    name = "Import/export GWA frame positions, scale, and font settings.",
-                },
-                export_now = {
-                    type = "execute",
-                    order = 5,
-                    name = "Generate Export String",
-                    func = function()
-                        gwaProfileExportText = BuildGWAProfileString()
-                        gwaProfileStatusText = "Export string generated. Copy from the box below."
-                    end,
-                },
-                export_text = {
-                    type = "input",
-                    order = 10,
-                    name = "Export String",
-                    width = "full",
-                    multiline = 4,
-                    get = function()
-                        return gwaProfileExportText
-                    end,
-                    set = function(_, value)
-                        gwaProfileExportText = value
-                    end,
-                },
-                import_text = {
-                    type = "input",
-                    order = 20,
-                    name = "Import String",
-                    width = "full",
-                    multiline = 4,
-                    get = function()
-                        return gwaProfileImportText
-                    end,
-                    set = function(_, value)
-                        gwaProfileImportText = value
-                    end,
-                },
-                import_apply = {
-                    type = "execute",
-                    order = 30,
-                    name = "Apply Import String",
-                    func = function()
-                        local ok, err = ImportGWAProfileString(gwaProfileImportText)
-                        if ok then
-                            if type(_G.GWA_ApplyImportedProfile) == "function" then
-                                _G.GWA_ApplyImportedProfile()
-                            end
-                            gwaProfileStatusText = "Import successful. Open or reopen Great Vault to verify."
-                            print("GWA: Profile imported from Options panel.")
-                        else
-                            gwaProfileStatusText = "Import failed: " .. tostring(err)
-                        end
-                    end,
-                },
-                status = {
-                    type = "description",
-                    order = 40,
-                    name = function()
-                        return gwaProfileStatusText ~= "" and gwaProfileStatusText or " "
-                    end,
-                },
-            },
-        },
     },
 }
 
--- moved this up
-local GetCriteriaInfo = function(id, criteria)
-    local results = {GetAchievementCriteriaInfoByID(id, criteria)}
-    if not results[1] then
-        if criteria <= GetAchievementNumCriteria(id) then
-            results = {GetAchievementCriteriaInfo(id, criteria)}
-        else
-            ns.Error(
-                'unknown achievement criteria (' .. id .. ', ' .. criteria ..
-                    ')')
-            return UNKNOWN
+local GetCriteriaCompleted = function(achievementTable)
+    if not achievementTable or not achievementTable.criteria then return false end
+
+    local completed = false
+
+    if achievementTable.id then
+        local success, _, _, isCompleted = pcall(GetAchievementCriteriaInfoByID, achievementTable.id, achievementTable.criteria)
+        if success and isCompleted ~= nil then
+            return isCompleted
+        end
+
+        local numCriteria = GetAchievementNumCriteria(achievementTable.id)
+        if numCriteria and numCriteria > 0 then
+            for i = 1, numCriteria do
+                local _, _, isComp, _, _, _, _, _, _, criteriaID = GetAchievementCriteriaInfo(achievementTable.id, i)
+                if criteriaID == achievementTable.criteria or i == achievementTable.criteria then
+                    return isComp
+                end
+            end
+        end
+    else
+        local success, _, _, isCompleted = pcall(GetAchievementCriteriaInfoByID, achievementTable.criteria)
+        if success and isCompleted ~= nil then
+            return isCompleted
         end
     end
-    return unpack(results)
+
+    return completed
 end
 
 local player_faction = UnitFactionGroup("player")
 local player_name = UnitName("player")
+
 ns.should_show_point = function(coord, point, currentZone, isMinimap)
     if isMinimap and not ns.db.show_on_minimap and not point.minimap then
         return false
@@ -229,7 +140,7 @@ ns.should_show_point = function(coord, point, currentZone, isMinimap)
     if point.faction and point.faction ~= player_faction then
         return false
     end
-    if point.Zamro and not ns.db.show_Zamro then
+    if point.ZamestoTV_Remix and not ns.db.show_ZamestoTV_Remix then
         return false
     end
     if point.hide_before and not ns.db.upcoming then
@@ -239,10 +150,22 @@ ns.should_show_point = function(coord, point, currentZone, isMinimap)
         return false
     end
 
-    -- Added this
-    if point.achievement and select(13, GetCriteriaInfo(point.achievement.id, point.achievement.criteria)) then
+    if point.achievement and GetCriteriaCompleted(point.achievement) then
         return false
     end
+
     return true
 end
 
+local plugin = LibStub("AceAddon-3.0"):GetAddon(myname, true)
+if plugin then
+    local function RefreshIcons()
+        if ns.HL then
+            ns.HL:SendMessage("HandyNotes_NotifyUpdate", myname:gsub("HandyNotes_", ""))
+        end
+    end
+
+    plugin:RegisterEvent("CRITERIA_UPDATE", RefreshIcons)
+    plugin:RegisterEvent("ACHIEVEMENT_EARNED", RefreshIcons)
+    plugin:RegisterEvent("QUEST_TURNED_IN", RefreshIcons)
+end

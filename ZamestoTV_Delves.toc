@@ -1,11 +1,11 @@
-## Interface: 120100
+## Interface: 120100, 120105
 ## Title: Delves helper
 ## Title-ruRU: Помощник по Вылазкам
 ## Notes: Useful functionality for Delves
 ## Notes-ruRU: Полезный функционал для Вылазок
 ## Author: ZamestoTV
 ## IconTexture: Interface\AddOns\ZamestoTV_Delves\Icons\goblin
-## Version: 3.6.2
+## Version: 3.7.5
 ## DefaultState: enabled
 ## X-Category: Map
 ## SavedVariables: HandyNotes_DelvesDB, BountyReminderDB, GreatVaultInfoDB, GWA_SavedVars, ZDH_SavedVars, DelveCurioReminderDB, ZamestoTV_DelvesDB, ValeeraMuterDB
@@ -40,3 +40,4 @@ Valeera.lua
 XPBoost.lua
 ValeeraMuter.lua
 Choice.lua
+Labyrinth.lua

@@ -14,7 +14,7 @@ local next = next
 local GameTooltip = GameTooltip
 local HandyNotes = HandyNotes
 
-local ARTIFACT_LABEL = '|cffff8000' .. ARTIFACT_POWER .. '|r'
+local ARTIFACT_LABEL = '|cffff8000' .. (ARTIFACT_POWER or "") .. '|r'
 
 local cache_tooltip = CreateFrame("GameTooltip", "HNBattleTreasuresTooltip")
 cache_tooltip:AddFontStrings(
@@ -35,7 +35,7 @@ local function mob_name(id)
     return name_cache[id]
 end
 
-local default_texture, Zamro_texture
+local default_texture, ZamestoTV_Delves_texture
 local icon_cache = {}
 
 local trimmed_icon = function(texture)
@@ -52,13 +52,33 @@ local trimmed_icon = function(texture)
 end
 
 local atlas_texture = function(atlas, scale)
-    local texture, _, _, left, right, top, bottom = GetAtlasInfo(atlas)
+    local info = C_Texture.GetAtlasInfo(atlas) or (GetAtlasInfo and GetAtlasInfo(atlas))
+    if type(info) == "table" then
+        return {
+            icon = info.file or info.filename,
+            tCoordLeft = info.leftTexCoord,
+            tCoordRight = info.rightTexCoord,
+            tCoordTop = info.topTexCoord,
+            tCoordBottom = info.bottomTexCoord,
+            scale = scale or 1,
+        }
+    elseif info then
+        local texture, _, _, left, right, top, bottom = GetAtlasInfo(atlas)
+        return {
+            icon = texture,
+            tCoordLeft = left,
+            tCoordRight = right,
+            tCoordTop = top,
+            tCoordBottom = bottom,
+            scale = scale or 1,
+        }
+    end
     return {
-        icon = texture,
-        tCoordLeft = left,
-        tCoordRight = right,
-        tCoordTop = top,
-        tCoordBottom = bottom,
+        icon = 134400, -- inv_misc_questionmark
+        tCoordLeft = 0,
+        tCoordRight = 1,
+        tCoordTop = 0,
+        tCoordBottom = 1,
         scale = scale or 1,
     }
 end
@@ -72,25 +92,32 @@ local function work_out_label(point)
 end
 
 local function work_out_texture(point)
+    -- 1. Приоритет для прямых путей к текстурам (например, Interface\Addons\...\Icons\cave.tga)
+    if point.pathto or point.ZamestoTV_Delves then
+        local texturePath = point.pathto or (point.ZamestoTV_Delves and point.pathto)
+        if texturePath then
+            return {
+                icon = texturePath,
+                tCoordLeft = 0,
+                tCoordRight = 1,
+                tCoordTop = 0,
+                tCoordBottom = 1,
+                scale = point.scale or 2.2,
+            }
+        end
+    end
+
+    -- 2. Атласы Blizzard
     if point.atlas then
         if not icon_cache[point.atlas] then
             icon_cache[point.atlas] = atlas_texture(point.atlas, point.scale)
         end
         return icon_cache[point.atlas]
     end
-    if point.Zamro then
-        return {
-            icon = point.pathto,
-            tCoordLeft = 0,
-            tCoordRight = 1,
-            tCoordTop = 0,
-            tCoordBottom = 1,
-            scale = 2.2,
-        }
-    end
+
+    -- 3. Текстура по умолчанию
     if not default_texture then
         default_texture = atlas_texture("Garr_TreasureIcon", 2.6)
-        return default_texture
     end
     return default_texture
 end
@@ -99,7 +126,7 @@ local get_point_info = function(point)
     if point then
         local label = work_out_label(point)
         local icon = work_out_texture(point)
-        local category = "Zamro"
+        local category = "ZamestoTV_Delves"
         -- if point.timeRift then
         --     category = "timeRift"
         -- end -- in case to add something else
@@ -173,7 +200,9 @@ local function hideNode(button, uiMapID, coord)
 end
 
 local function closeAllDropdowns()
-    CloseDropDownMenus(1)
+    if CloseDropDownMenus then
+        CloseDropDownMenus(1)
+    end
 end
 
 do
@@ -234,7 +263,9 @@ end
 
 function HLHandler:OnLeave(uiMapID, coord)
     GameTooltip:Hide()
-    ShoppingTooltip1:Hide()
+    if ShoppingTooltip1 then
+        ShoppingTooltip1:Hide()
+    end
 end
 
 do
@@ -253,28 +284,45 @@ do
         end
         return nil, nil, nil, nil
     end
+
     local function UnitHasBuff(unit, spellid)
-        local buffname = GetSpellInfo(spellid)
+        local buffname
+        if C_Spell and C_Spell.GetSpellInfo then
+            local spellInfo = C_Spell.GetSpellInfo(spellid)
+            buffname = spellInfo and spellInfo.name
+        elseif GetSpellInfo then
+            buffname = GetSpellInfo(spellid)
+        end
+        if not buffname then return end
+
         for i = 1, 40 do
-            local name = UnitBuff(unit, i)
+            local name
+            if C_UnitAuras and C_UnitAuras.GetBuffDataByIndex then
+                local aura = C_UnitAuras.GetBuffDataByIndex(unit, i)
+                name = aura and aura.name
+            elseif UnitBuff then
+                name = UnitBuff(unit, i)
+            end
+
             if not name then
                 -- reached the end, probably
                 return
             end
             if buffname == name then
-                return UnitBuff(unit, i)
+                return true
             end
         end
     end
+
     function HLHandler:GetNodes2(uiMapID, minimap)
         Debug("GetNodes2", uiMapID, minimap)
         currentZone = uiMapID
         isMinimap = minimap
-        if minimap and ns.map_spellids[uiMapID] then
-            if ns.map_spellids[mapFile] == true then
+        if minimap and ns.map_spellids and ns.map_spellids[uiMapID] then
+            if ns.map_spellids[uiMapID] == true then
                 return iter
             end
-            if UnitHasBuff("player", ns.map_spellids[mapFile]) then
+            if UnitHasBuff("player", ns.map_spellids[uiMapID]) then
                 return iter
             end
         end
@@ -293,7 +341,9 @@ function HL:OnInitialize()
     -- Initialize our database with HandyNotes
     HandyNotes:RegisterPluginDB(myname:gsub("HandyNotes_", ""), HLHandler, ns.options)
 
-    -- watch for LOOT_CLOSED
+    self:RegisterEvent("CRITERIA_UPDATE", "Refresh")
+    self:RegisterEvent("ACHIEVEMENT_EARNED", "Refresh")
+    self:RegisterEvent("QUEST_TURNED_IN", "Refresh")
     self:RegisterEvent("LOOT_CLOSED", "Refresh")
     self:RegisterEvent("ZONE_CHANGED_INDOORS", "Refresh")
 end
