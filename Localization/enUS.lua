@@ -84,8 +84,19 @@ L["Ancient Chest #35"] = "|cFFFFFFFFAncient Chest #35|r"
 L["Ancient Chest #36"] = "|cFFFFFFFFAncient Chest #36|r"
 L["Ancient Chest #37"] = "|cFFFFFFFFAncient Chest #37|r"
 L["Ancient Chest #38"] = "|cFFFFFFFFAncient Chest #38|r"
+L["Ancient Chest #39"] = "|cFFFFFFFFAncient Chest #39|r"
+L["Ancient Chest #40"] = "|cFFFFFFFFAncient Chest #40|r"
+L["Ancient Chest #41"] = "|cFFFFFFFFAncient Chest #41|r"
+L["Ancient Chest #42"] = "|cFFFFFFFFAncient Chest #42|r"
+L["Ancient Chest #43"] = "|cFFFFFFFFAncient Chest #43|r"
 
-L["Entrance"] = "Entrance at 56.9, 34.4"
+L["Entrance"] = "Inside the underwater cave"
+L["Entrance 2"] = "Requires Akil'zon's Favor. Unlocks at Rank 3."
+L["Entrance 3"] = "Entrance to the underwater cave"
+L["Entrance 4"] = "Beneath the bridge"
+L["Entrance 5"] = "Requires Jan'alai's Favor. Unlocks at Rank 5."
+L["Entrance 6"] = "Requires Nalorakk's Favor. Unlocks at Rank 7."
+L["Entrance 7"] = "Requires Halazzi's Favor. Unlocks at Rank 9."
 
 -- Waypoints
 L["Create waypoint"] = true
@@ -105,7 +116,7 @@ L["Show icons on world map"] = true
 L["Minimap"] = true
 L["Show icons on the minimap"] = true
 L["What to display"] = true
-L["Show Zamros"] = "Show gold farming locations"
-L["Show Zamros gold"] = "Show activity points with which you can earn gold"
+L["Show Zamros"] = "Show chest locations"
+L["Show Zamros Delves"] = "Show activity locations"
 L["Reset hidden nodes"] = true
 L["Show all nodes that you manually hid by right-clicking on them and choosing \"hide\"."] = true
