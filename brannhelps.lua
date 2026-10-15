@@ -50,6 +50,26 @@ local companionCurioData = {
 }
 
 -- ==================== Helper Functions ====================
+local function SafeGetItemIcon(itemID)
+    if not itemID then return 134400 end
+    if C_Item and C_Item.GetItemIconByID then
+        return C_Item.GetItemIconByID(itemID) or 134400
+    elseif GetItemIcon then
+        return GetItemIcon(itemID) or 134400
+    end
+    return 134400
+end
+
+local function SafeGetItemCount(itemID)
+    if not itemID then return 0 end
+    if C_Item and C_Item.GetItemCount then
+        return C_Item.GetItemCount(itemID, false) or 0
+    elseif GetItemCount then
+        return GetItemCount(itemID, false) or 0
+    end
+    return 0
+end
+
 local function GetCurrentCompanionName()
     if not DelvesCompanionConfigurationFrame then return nil end
     local infoFrame = DelvesCompanionConfigurationFrame.CompanionInfoFrame
@@ -92,7 +112,7 @@ local function CreateRoleFrame(parent, role, data)
     local combatIcon = frame:CreateTexture(nil, "ARTWORK")
     combatIcon:SetSize(ICON_SIZE, ICON_SIZE)
     combatIcon:SetPoint("LEFT", roleIcon, "RIGHT", 5, 0)
-    combatIcon:SetTexture(GetItemIcon(data.combatCurio.itemID))
+    combatIcon:SetTexture(SafeGetItemIcon(data.combatCurio.itemID))
 
     local combatText = frame:CreateFontString(nil, "OVERLAY")
     combatText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE")
@@ -109,13 +129,13 @@ local function CreateRoleFrame(parent, role, data)
     local utilityIcon = frame:CreateTexture(nil, "ARTWORK")
     utilityIcon:SetSize(ICON_SIZE, ICON_SIZE)
     utilityIcon:SetPoint("LEFT", frame, "LEFT", ICON_SIZE + 5, -ICON_SIZE / 2)
-    utilityIcon:SetTexture(GetItemIcon(data.utilityCurio.itemID))
+    utilityIcon:SetTexture(SafeGetItemIcon(data.utilityCurio.itemID))
 
     local utilityText = frame:CreateFontString(nil, "OVERLAY")
     utilityText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE")
     utilityText:SetTextColor(0, 1, 0.804, 1)
     utilityText:SetPoint("LEFT", utilityIcon, "RIGHT", 5, 0)
-    utilityText:SetText("Utility Curio: " .. data.utilityCurio.name) -- Исправлено: SetText вместо Text
+    utilityText:SetText("Utility Curio: " .. data.utilityCurio.name)
 
     local utilityCount = frame:CreateFontString(nil, "OVERLAY")
     utilityCount:SetFont("Fonts\\FRIZQT__.TTF", 24)
@@ -157,7 +177,7 @@ local function CreateValeeraFrame(parent, data)
     local combatIcon = frame:CreateTexture(nil, "ARTWORK")
     combatIcon:SetSize(ICON_SIZE, ICON_SIZE)
     combatIcon:SetPoint("TOPLEFT", frame, "TOPLEFT", 10, -ICON_SIZE)
-    combatIcon:SetTexture(GetItemIcon(data.combatCurio.itemID))
+    combatIcon:SetTexture(SafeGetItemIcon(data.combatCurio.itemID))
 
     local combatText = frame:CreateFontString(nil, "OVERLAY")
     combatText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE")
@@ -174,7 +194,7 @@ local function CreateValeeraFrame(parent, data)
     local utilityIcon = frame:CreateTexture(nil, "ARTWORK")
     utilityIcon:SetSize(ICON_SIZE, ICON_SIZE)
     utilityIcon:SetPoint("TOPLEFT", combatIcon, "BOTTOMLEFT", 0, -8)
-    utilityIcon:SetTexture(GetItemIcon(data.utilityCurio.itemID))
+    utilityIcon:SetTexture(SafeGetItemIcon(data.utilityCurio.itemID))
 
     local utilityText = frame:CreateFontString(nil, "OVERLAY")
     utilityText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE")
@@ -187,7 +207,7 @@ local function CreateValeeraFrame(parent, data)
     utilityCount:SetTextColor(1, 1, 1, 1)
     utilityCount:SetPoint("LEFT", utilityText, "RIGHT", 6, 0)
 
-    -- 4. Спек строка 3: Curio Toxin
+    -- 4. Спек строка 3: Curio Toxin (Spell)
     local toxinIcon = frame:CreateTexture(nil, "ARTWORK")
     toxinIcon:SetSize(ICON_SIZE, ICON_SIZE)
     toxinIcon:SetPoint("TOPLEFT", utilityIcon, "BOTTOMLEFT", 0, -8)
@@ -206,6 +226,7 @@ local function CreateValeeraFrame(parent, data)
     toxinCount:SetFont("Fonts\\FRIZQT__.TTF", 20)
     toxinCount:SetTextColor(1, 1, 1, 1)
     toxinCount:SetPoint("LEFT", toxinText, "RIGHT", 6, 0)
+    toxinCount:SetText("") -- Toxin je spell, takže nezisťujeme počet predmetov v inventári cez GetItemCount
 
     frame.combatCount   = combatCount
     frame.utilityCount  = utilityCount
@@ -220,17 +241,14 @@ end
 local function UpdateItemCounts(frame)
     if not frame then return end
     if frame.combatItemID then
-        local combatCount = GetItemCount(frame.combatItemID, false) or 0
+        local combatCount = SafeGetItemCount(frame.combatItemID)
         frame.combatCount:SetText(combatCount > 0 and tostring(combatCount) or "")
     end
     if frame.utilityItemID then
-        local utilityCount = GetItemCount(frame.utilityItemID, false) or 0
+        local utilityCount = SafeGetItemCount(frame.utilityItemID)
         frame.utilityCount:SetText(utilityCount > 0 and tostring(utilityCount) or "")
     end
-    if frame.toxinSpellID and frame.toxinCount then
-        local toxinCount = GetItemCount(frame.toxinSpellID, false) or 0
-        frame.toxinCount:SetText(toxinCount > 0 and tostring(toxinCount) or "")
-    end
+    -- Pre toxinSpellID nič nerobíme pomocou GetItemCount, keďže ide o kúzlo (spell)
 end
 
 -- ==================== Main Frame ====================

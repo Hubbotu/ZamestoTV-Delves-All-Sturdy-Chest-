@@ -5,7 +5,7 @@ local path_meta = {__index = {
     label = "Path to treasure",
     atlas = "map-icon-SuramarDoor.tga",
     path = true,
-    scale = 1.1,
+    scale = 1.4,
 }}
 
 ns.map_spellids = {
@@ -1242,6 +1242,13 @@ ns.points = {
 			note = L["Entrance 2"],
 			pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
 		}),
+		[21623664] = ({
+			label = L["Ancient Chest #44"],
+			cont = true,
+			quest = 98603,
+			Zamro = true,
+			pathto = "Interface\\Addons\\"..myname.."\\Icons\\chest.tga",
+		}),		
 		[56084413] = ({
 			label = L["Entrance 3"],
 			cont = true,
