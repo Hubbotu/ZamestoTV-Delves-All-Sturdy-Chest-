@@ -90,6 +90,7 @@ L["Ancient Chest #40"] = "|cFFFFFFFFUralte Truhe #40|r"
 L["Ancient Chest #41"] = "|cFFFFFFFFUralte Truhe #41|r"
 L["Ancient Chest #42"] = "|cFFFFFFFFUralte Truhe #42|r"
 L["Ancient Chest #43"] = "|cFFFFFFFFUralte Truhe #43|r"
+L["Ancient Chest #44"] = "|cFFFFFFFFUralte Truhe #44|r"
 
 L["Entrance"] = "In der Unterwasserhöhle"
 L["Entrance 2"] = "Requires Akil'zon's Favor. Unlocks at Rank 3."

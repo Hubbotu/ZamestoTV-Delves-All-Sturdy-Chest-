@@ -89,6 +89,7 @@ L["Ancient Chest #40"] = "|cFFFFFFFFAncient Chest #40|r"
 L["Ancient Chest #41"] = "|cFFFFFFFFAncient Chest #41|r"
 L["Ancient Chest #42"] = "|cFFFFFFFFAncient Chest #42|r"
 L["Ancient Chest #43"] = "|cFFFFFFFFAncient Chest #43|r"
+L["Ancient Chest #44"] = "|cFFFFFFFFAncient Chest #44|r"
 
 L["Entrance"] = "Inside the underwater cave"
 L["Entrance 2"] = "Requires Akil'zon's Favor. Unlocks at Rank 3."

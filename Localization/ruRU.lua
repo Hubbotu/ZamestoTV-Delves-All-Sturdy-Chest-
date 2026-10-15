@@ -88,6 +88,7 @@ L["Ancient Chest #40"] = "|cFFFFFFFFДревний сундук #40|r"
 L["Ancient Chest #41"] = "|cFFFFFFFFДревний сундук #41|r"
 L["Ancient Chest #42"] = "|cFFFFFFFFДревний сундук #42|r"
 L["Ancient Chest #43"] = "|cFFFFFFFFДревний сундук #43|r"
+L["Ancient Chest #44"] = "|cFFFFFFFFДревний сундук #44|r"
 
 L["Entrance"] = "Внутри подводной пещеры"
 L["Entrance 2"] = "Требует Благосклонность Акил'зон. Открывается на 3 уровне репутации."
