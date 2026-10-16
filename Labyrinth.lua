@@ -91,7 +91,7 @@ local function FindKindoJanCardAndLevel()
 end
 
 local function GetAvailableChestsByLevel(level)
-    if level == 1 or level == 2 then return 24
+    if level == 1 or level == 2 then return 25
     elseif level == 3 or level == 4 then return 30
     elseif level == 5 or level == 6 then return 34
     elseif level == 7 or level == 8 then return 38
