@@ -9,13 +9,19 @@ local TotalText = nil
 local AvailableText = nil
 
 local function GetAchievementProgress(achievementID)
+    -- Сначала проверяем, получено ли достижение целиком
+    local _, _, _, completed = GetAchievementInfo(achievementID)
+    if completed then 
+        return MAX_CHESTS 
+    end
+
     local numCriteria = GetAchievementNumCriteria(achievementID) or 0
     local completedCount = 0
 
     if numCriteria > 0 then
         for i = 1, numCriteria do
-            local _, _, completed, quantity = GetAchievementCriteriaInfo(achievementID, i)
-            if completed then
+            local _, _, completedCrit, quantity = GetAchievementCriteriaInfo(achievementID, i)
+            if completedCrit then
                 completedCount = completedCount + 1
             elseif quantity and quantity > 0 then
                 completedCount = completedCount + quantity
@@ -24,9 +30,7 @@ local function GetAchievementProgress(achievementID)
         if completedCount > 0 then return completedCount end
     end
 
-    local _, _, _, completed, _, _, _, _, _, _, _, _, _, _, progress = GetAchievementInfo(achievementID)
-    if completed then return MAX_CHESTS end
-    
+    local _, _, _, _, _, _, _, _, _, _, _, _, _, _, progress = GetAchievementInfo(achievementID)
     if type(progress) == "number" and progress > 0 then
         return progress
     end
