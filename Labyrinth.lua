@@ -92,9 +92,9 @@ end
 
 local function GetAvailableChestsByLevel(level)
     if level == 1 or level == 2 then return 25
-    elseif level == 3 or level == 4 then return 30
-    elseif level == 5 or level == 6 then return 34
-    elseif level == 7 or level == 8 then return 38
+    elseif level == 3 or level == 4 then return 31
+    elseif level == 5 or level == 6 then return 35
+    elseif level == 7 or level == 8 then return 39
     elseif level >= 9 then return 44 end
     return 0
 end
@@ -140,14 +140,14 @@ local function UpdateDisplay()
     Container:SetPoint("TOPLEFT", cardFrame, "TOPLEFT", 50, -50)
 
     local currentProgress = GetAchievementProgress(TARGET_ACHIEVEMENT_ID)
-    local availableChests = GetAvailableChestsByLevel(level)
+    local maxAvailableForLevel = GetAvailableChestsByLevel(level)
 
     TotalText:SetText(string.format("Total Chests: |cffffd100%02d/%d|r", currentProgress, MAX_CHESTS))
 
     if level > 0 then
-        AvailableText:SetText(string.format("Currently Available: |cff00ff00%d of %d|r (Level %d/9)", availableChests, MAX_CHESTS, level))
+        AvailableText:SetText(string.format("Currently Available: |cff00ff00%d/%d|r (Level %d/9)", currentProgress, maxAvailableForLevel, level))
     else
-        AvailableText:SetText(string.format("Currently Available: |cff00ff00%d of %d|r", availableChests, MAX_CHESTS))
+        AvailableText:SetText(string.format("Currently Available: |cff00ff00%d|r", currentProgress))
     end
 
     Container:Show()
